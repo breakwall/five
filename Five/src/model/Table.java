@@ -33,6 +33,10 @@ public class Table {
 		return tableModel[x][y];
 	}
 	
+	public Cell get(Point point) {
+		return get(point.getX(), point.getY());
+	}
+	
 	public void print() {
 		for(int i = 0; i < COLUMN; i++) {
 			StringBuffer sb = new StringBuffer();

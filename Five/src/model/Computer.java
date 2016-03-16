@@ -20,9 +20,9 @@ public class Computer {
 		
 		Cell lastCell = lastStep.getCell();
 		
-		List<Point> available = tableHelper.getNearAvailable(lastCell.getPoint());
+		List<Cell> available = tableHelper.getNearAvailable(lastCell.getPoint());
 		if (!available.isEmpty()) {
-			return available.get(Utils.random(available.size()));
+			return available.get(Utils.random(available.size())).getPoint();
 		}
 		return null;
 	}

@@ -48,10 +48,10 @@ public class TableHelper {
 		return times >= 5;
 	}
 	
-	public List<Point> getNearAvailable(Point point) {
+	public List<Cell> getNearAvailable(Point point) {
 		int x = point.getX();
 		int y = point.getY();
-		List<Point> list = new ArrayList<>();
+		List<Cell> list = new ArrayList<Cell>();
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
 				if (x + i < 0 || x + i >= Table.COLUMN || y + j < 0
@@ -61,7 +61,7 @@ public class TableHelper {
 				
 				Point p = Point.get(x + i, y + j);
 				if (table.isAvailable(p)) {
-					list.add(p);
+					list.add(table.get(p));
 				}
 			}
 		}
@@ -73,12 +73,12 @@ public class TableHelper {
 		return progress.getLastStep();
 	}
 	
-	public Map<Integer, Line> getRow(Stone stone) {
-		List<Cell> cells = progress.getCells(stone);
-		for (Cell cell : cells) {
-			List<Line> lines = Utils.getReferenceLines(cell.getPoint());
-		}
-	}
+//	public Map<Integer, Line> getRow(Stone stone) {
+//		List<Cell> cells = progress.getCells(stone);
+//		for (Cell cell : cells) {
+//			List<Line> lines = Utils.getReferenceLines(cell.getPoint());
+//		}
+//	}
 	
 	public Progress getProgress() {
 		return progress;
