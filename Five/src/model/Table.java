@@ -23,7 +23,7 @@ public class Table {
 		int x = point.getX();
 		int y = point.getY();
 		if (Utils.isInTableRange(x) && Utils.isInTableRange(y)) {
-			return tableModel[x][y].equals(Stone.NONE);
+			return tableModel[x][y].getStone().equals(Stone.NONE);
 		}
 		
 		return false;
@@ -44,10 +44,10 @@ public class Table {
 				String str;
 				switch (tableModel[j][i].getStone()) {
 				case BLACK:
-					str = "B ";
+					str = "x ";
 					break;
 				case WHITE:
-					str = "W ";
+					str = "o ";
 					break;
 				default:
 					str = "- ";

@@ -22,4 +22,9 @@ public class Line {
 	public Direction getDirection() {
 		return direction;
 	}
+	
+	@Override
+	public String toString() {
+		return startPoint.toString() + "->" + endPoint.toString();
+	}
 }

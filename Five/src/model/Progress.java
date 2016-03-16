@@ -42,4 +42,13 @@ public class Progress {
 		
 		return cells;
 	}
+	
+	public List<Cell> getCells() {
+		List<Cell> cells = new ArrayList<Cell>();
+		for (Step step : steps) {
+			cells.add(step.getCell());
+		}
+		
+		return cells;
+	}
 }

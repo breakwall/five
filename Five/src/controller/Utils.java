@@ -29,7 +29,7 @@ public class Utils {
 		for (Direction direction : directions) {
 			Point startPoint = getEdgePoint(point, direction);
 			Point endPoint = getEdgePoint(point, direction.getOpposite());
-			Line line = new Line(startPoint, endPoint, direction);
+			Line line = new Line(startPoint, endPoint, direction.getOpposite());
 			list.add(line);
 		}
 		

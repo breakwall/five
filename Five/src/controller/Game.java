@@ -31,6 +31,7 @@ public class Game {
 			if (point == null) {
 				// game over
 				System.out.println(currentStone + " lose!");
+				table.print();
 				break;
 			}
 			
@@ -39,7 +40,6 @@ public class Game {
 			}
 			
 			tableHelper.move(currentStone, point);
-			
 			if (tableHelper.checkWin(currentStone, point)) {
 				System.out.println(currentStone + "win!");
 				table.print();
@@ -54,8 +54,6 @@ public class Game {
 	
 	public static void main(String[] args) {
 		Game game = new Game();
-		while(!game.start()) {
-			//
-		}
+		game.start();
 	}
 }

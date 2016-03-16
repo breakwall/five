@@ -1,8 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import controller.Utils;
 
@@ -33,16 +34,19 @@ public class TableHelper {
 		int x = start.getX();
 		int y = start.getY();
 		
-		while (Utils.isInTableRange(x) && Utils.isInTableRange(x)
-				&& x != end.getX() && y != end.getY()) {
-			if (table.get(x, y).equals(stone)) {
+		while (Utils.isInTableRange(x) && Utils.isInTableRange(y)) {
+			if (table.get(x, y).getStone().equals(stone)) {
 				times = times + 1;
 			} else {
 				times = 0;
 			}
 
-			x = x + direction.x;
-			y = y + direction.y;
+			if (x == end.getX() && y == end.getY()) {
+				break;
+			} else {
+				x = x + direction.x;
+				y = y + direction.y;
+			}
 		}
 		
 		return times >= 5;
@@ -67,6 +71,15 @@ public class TableHelper {
 		}
 		
 		return list;
+	}
+	
+	public List<Cell> getNearAvailable() {
+		List<Cell> cells = progress.getCells();
+		Set<Cell> all = new HashSet<Cell>();
+		for (Cell cell : cells) {
+			all.addAll(getNearAvailable(cell.getPoint()));
+		}
+		return new ArrayList<Cell>(all);
 	}
 	
 	public Step getLastStep() {

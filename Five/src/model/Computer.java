@@ -6,10 +6,10 @@ import controller.Utils;
 
 public class Computer {
 	
-	public Stone chessman;
+	public Stone stone;
 	
-	public Computer(Stone chessman) {
-		this.chessman = chessman;
+	public Computer(Stone stone) {
+		this.stone = stone;
 	}
 	
 	public Point getStepPoint(TableHelper tableHelper) {
@@ -18,12 +18,20 @@ public class Computer {
 			return Utils.random(Point.get(Table.COLUMN / 2, Table.COLUMN / 2), 3);
 		}
 		
-		Cell lastCell = lastStep.getCell();
-		
-		List<Cell> available = tableHelper.getNearAvailable(lastCell.getPoint());
-		if (!available.isEmpty()) {
-			return available.get(Utils.random(available.size())).getPoint();
+		List<Cell> cells = tableHelper.getProgress().getCells(stone);
+		if (cells.size() < 3) {
+			Cell lastCell = lastStep.getCell();
+			List<Cell> available = tableHelper.getNearAvailable(lastCell.getPoint());
+			if (!available.isEmpty()) {
+				return available.get(Utils.random(available.size())).getPoint();
+			}
 		}
+		
+		List<Cell> nearAvailable = tableHelper.getNearAvailable();
+		if (!nearAvailable.isEmpty()) {
+			return nearAvailable.get(Utils.random(nearAvailable.size())).getPoint();			
+		}
+		
 		return null;
 	}
 }
