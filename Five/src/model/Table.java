@@ -38,6 +38,7 @@ public class Table {
 	}
 	
 	public void print() {
+		System.out.println("+ + + + + + + + + + + + + + + ");
 		for(int i = 0; i < COLUMN; i++) {
 			StringBuffer sb = new StringBuffer();
 			for (int j= 0; j< COLUMN; j++) {

@@ -11,25 +11,34 @@ import model.Table;
 
 public class Utils {
 	
+	public static final Direction[] directions = {Direction.N, Direction.NW, Direction.W, Direction.SW};
+	
 	public static final Random RANDOM = new Random();
 	
-	public static Point getEdgePoint(Point point, Direction direction) {
+	public static List<Point> getLinePoints(Point point, Direction direction) {
+		List<Point> points = new ArrayList<Point>();
 		int x = point.getX();
 		int y = point.getY();
 		while (isInTableRange(x + direction.x) && isInTableRange(y + direction.y)) {
 			x = x + direction.x;
 			y = y + direction.y;
 		}
-		return point.get(x, y);
+		
+		Direction oppositeDirection = direction.getOpposite();
+		do {
+			points.add(Point.get(x, y));
+			x = x + oppositeDirection.x;
+			y = y + oppositeDirection.y;
+		} while (isInTableRange(x) && isInTableRange(y));
+		
+		return points;
 	}
 	
 	public static List<Line> getReferenceLines(Point point) {
-		Direction[] directions = {Direction.N, Direction.NW, Direction.W, Direction.SW};
 		List<Line> list = new ArrayList<Line>();
 		for (Direction direction : directions) {
-			Point startPoint = getEdgePoint(point, direction);
-			Point endPoint = getEdgePoint(point, direction.getOpposite());
-			Line line = new Line(startPoint, endPoint, direction.getOpposite());
+			List<Point> points = getLinePoints(point, direction);
+			Line line = new Line(points, direction.getOpposite());
 			list.add(line);
 		}
 		

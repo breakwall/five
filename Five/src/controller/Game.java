@@ -5,7 +5,6 @@ import java.util.Map;
 
 import model.Computer;
 import model.Point;
-import model.Progress;
 import model.Stone;
 import model.Table;
 import model.TableHelper;
@@ -40,9 +39,10 @@ public class Game {
 			}
 			
 			tableHelper.move(currentStone, point);
+			table.print();
+			
 			if (tableHelper.checkWin(currentStone, point)) {
-				System.out.println(currentStone + "win!");
-				table.print();
+				System.out.println(currentStone + " win!");
 				return true;
 			}
 			

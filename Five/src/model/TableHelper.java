@@ -27,29 +27,18 @@ public class TableHelper {
 	
 	public boolean containsRow(Stone stone, Line line) {
 		int times = 0;
-		Point start = line.getStartPoint();
-		Point end = line.getEndPoint();
-		Direction direction = line.getDirection();
 		
-		int x = start.getX();
-		int y = start.getY();
-		
-		while (Utils.isInTableRange(x) && Utils.isInTableRange(y)) {
-			if (table.get(x, y).getStone().equals(stone)) {
-				times = times + 1;
+		for (int i = 0 ; i < line.size(); i++) {
+			if (table.get(line.getPoint(i)).getStone() == stone) {
+				times ++;
+				if (times == 5) {
+					return true;
+				}
 			} else {
 				times = 0;
 			}
-
-			if (x == end.getX() && y == end.getY()) {
-				break;
-			} else {
-				x = x + direction.x;
-				y = y + direction.y;
-			}
 		}
-		
-		return times >= 5;
+		return false;
 	}
 	
 	public List<Cell> getNearAvailable(Point point) {
@@ -95,6 +84,10 @@ public class TableHelper {
 	
 	public Progress getProgress() {
 		return progress;
+	}
+	
+	public Table getTable() {
+		return table;
 	}
 	
 	public void move(Stone stone, Point point) {
