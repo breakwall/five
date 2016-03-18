@@ -17,8 +17,8 @@ public class Game {
 		table = new Table();
 		tableHelper = new TableHelper(table);
 		
-		Computer c1 = new Computer(Stone.BLACK);
-		Computer c2 = new Computer(Stone.WHITE);
+		Computer c1 = new Computer(Stone.BLACK, tableHelper);
+		Computer c2 = new Computer(Stone.WHITE, tableHelper);
 		Map<Stone, Computer> players = new HashMap<>();
 		players.put(Stone.BLACK, c1);
 		players.put(Stone.WHITE, c2);
@@ -26,7 +26,7 @@ public class Game {
 		Stone currentStone = Stone.BLACK;
 		while(true) {
 			Computer player = players.get(currentStone);
-			Point point = player.getStepPoint(tableHelper);
+			Point point = player.getStepPoint();
 			if (point == null) {
 				// game over
 				System.out.println(currentStone + " lose!");

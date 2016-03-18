@@ -44,6 +44,17 @@ public class Line {
 		return false;
 	}
 	
+	public Point getForwardPoint() {
+		Point fromPoint = points.get(0);
+		Direction dir = direction.getOpposite();
+		return Point.get(fromPoint.getX() + dir.x, fromPoint.getY() + dir.y);
+	}
+	
+	public Point getBackwardPoint() {
+		Point toPoint = points.get(points.size() - 1);
+		return Point.get(toPoint.getX() + direction.x, toPoint.getY() + direction.y);
+	}
+	
 	@Override
 	public String toString() {
 		return points.get(0).toString() + "->" + points.get(points.size() - 1).toString();

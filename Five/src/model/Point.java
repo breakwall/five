@@ -3,6 +3,8 @@ package model;
 import java.util.HashMap;
 import java.util.Map;
 
+import controller.Utils;
+
 public class Point {
 	
 	private static Map<String, Point> cache = new HashMap<>();
@@ -11,8 +13,10 @@ public class Point {
 		String key = getKey(x, y);
 		Point point = cache.get(key);
 		if (point == null) {
-			point = new Point(x, y);
-			cache.put(key, point);
+			if (Utils.isInTableRange(x) && Utils.isInTableRange(y)) {
+				point = new Point(x, y);
+				cache.put(key, point);
+			}
 		}
 		
 		return point;
