@@ -14,10 +14,11 @@ public class Computer {
 		this.tableHelper = tableHelper;
 	}
 	
-	public Point getStepPoint() {
+	public Cell getStepCell() {
 		Step lastStep = tableHelper.getLastStep();
 		if (lastStep == null) {
-			return Utils.random(Point.get(Table.COLUMN / 2, Table.COLUMN / 2), 2);
+			Point point = Utils.random(Point.get(Table.COLUMN / 2, Table.COLUMN / 2), 2);
+			return tableHelper.getTable().get(point);
 		}
 		
 		List<Cell> cells = tableHelper.getProgress().getCells(stone);
@@ -25,7 +26,7 @@ public class Computer {
 			Cell lastCell = lastStep.getCell();
 			List<Cell> available = tableHelper.getNearAvailable(lastCell.getPoint());
 			if (!available.isEmpty()) {
-				return available.get(Utils.random(available.size())).getPoint();
+				return available.get(Utils.random(available.size()));
 			}
 		}
 		
@@ -34,133 +35,45 @@ public class Computer {
 			return null;
 		}
 		
-		Point defencePoint = getDefencePoint();
+		Cell defencePoint = getDefenceCell(nearAvailable);
 		if (defencePoint != null) {
-			System.out.println("defence");
 			return defencePoint;
 		}
-		System.out.println("attack");
-		Point candidatePoint = null;
-		int candidateLinePriority = 0;
-		
-		for (Cell ne : nearAvailable) {
-			List<Line> lines = Utils.getReferenceLines(ne.getPoint());
-			for (Line line : lines) {
-				Line tmpLine = getCandidateLine(stone, ne, line);
-//				System.out.println("candidate line " + tmpLine);
-				if (tmpLine != null) {
-					int linePriority = getLinePriority(line);
-//					System.out.println("priority: " + linePriority) ;
-					if (linePriority > candidateLinePriority) {
-						candidatePoint = ne.getPoint();
-						candidateLinePriority = linePriority;
-					}
-				}
-			}
-		}
-		
-		return candidatePoint;
-	}
-	
-	private Point getDefencePoint() {
-		Table table = tableHelper.getTable();
-		Step lastStep = tableHelper.getLastStep();
-		Cell lastCell = lastStep.getCell();
-		List<Line> lines = Utils.getReferenceLines(lastCell.getPoint());
-		for (Line line : lines) {
-			Line defenceLine = getDefenceLine(lastCell, line);
-			if (defenceLine == null) {
-				continue;
-			}
-			
-			Point forwardPoint = defenceLine.getForwardPoint();
-			Point backwardPoint = defenceLine.getBackwardPoint();
-			if (forwardPoint != null
-					&& table.get(forwardPoint).getStone() == Stone.NONE) {
-				return forwardPoint;
-			}
-
-			if (backwardPoint != null
-					&& table.get(backwardPoint).getStone() == Stone.NONE) {
-				return backwardPoint;
-			}
-		}
 		
 		return null;
 	}
 	
-	private int getLinePriority(Line line) {
-		Table table = tableHelper.getTable();
-		int priority = 0;
-		for (Point point : line.getPoints()) {
-			if (table.get(point).getStone() == stone) {
-				priority ++;
+	private Cell getDefenceCell(List<Cell> nearAvailable) {
+		int maxWeight = 0;
+		Cell defenceCell = null;
+		Stone targetStone = stone.getOpposite();
+		for (Cell cell : nearAvailable) {
+			int weight = Utils.getWeightOfCell(cell, targetStone);
+			if (weight > maxWeight) {
+				maxWeight = weight;
+				defenceCell = cell;
 			}
 		}
 		
-		return priority;
-	}
-	
-	private Line getDefenceLine(Cell cell, Line line) {
-		List<Line> subLines = new ArrayList<Line>();
-		Stone oppositeStone = stone.getOpposite();
-		int startIndex = -1;
-		for (int i = 0; i < line.size(); i++) {
-			Cell c = tableHelper.getTable().get(line.getPoint(i));
-			if (c.getStone() == oppositeStone) {
-				if (startIndex == -1) {
-					startIndex = i;					
-				}
-				
-				if (startIndex != -1 && i == line.size() - 1 && i - startIndex + 1 >= 3) {
-					subLines.add(line.getSubLine(startIndex, i));
-				}
-			} else {
-				if (startIndex != -1 && i - startIndex >= 3) {
-					subLines.add(line.getSubLine(startIndex, i - 1));
-				}
-				startIndex = -1;
-			}
-		}
-		
-		Line defenceLine = null;
-		for (Line subLine : subLines) {
-			if (subLine.containsPoint(cell.getPoint())) {
-				defenceLine = subLine;
-				break;
-			}
-		}
 
-		return defenceLine;
-	}
-	
-	private Line getCandidateLine(Stone stone, Cell cell, Line line) {
-		List<Line> subLines = new ArrayList<Line>();
-		int startIndex = -1;
-		for (int i = 0 ; i < line.size();i++) {
-			Cell c = tableHelper.getTable().get(line.getPoint(i));
-			if (c.getStone() != stone.getOpposite()) {
-				if (startIndex == -1) {
-					startIndex = i;					
-				}
-				
-				if (startIndex != -1 && i == line.size() - 1 && i - startIndex + 1 >= 5) {
-					subLines.add(line.getSubLine(startIndex, i));
-				}
-			} else {
-				if (startIndex != -1 && i - startIndex >= 5) {
-					subLines.add(line.getSubLine(startIndex, i - 1));
-				}
-				startIndex = -1;
+		int maxWeight2 = 0;
+		Cell attackCell = null;
+		targetStone = stone;
+		for (Cell cell : nearAvailable) {
+			int weight = Utils.getWeightOfCell(cell, targetStone);
+			if (weight > maxWeight2) {
+				maxWeight2 = weight;
+				attackCell = cell;
 			}
 		}
 		
-		for (Line subLine : subLines) {
-			if (subLine.containsPoint(cell.getPoint())) {
-				return subLine;
-			}
+		System.out.println(maxWeight + ":" + maxWeight2);
+		if (maxWeight > maxWeight2) {
+			System.out.println("defence");
+			return defenceCell;
+		} else {
+			System.out.println("attack");
+			return attackCell;
 		}
-		
-		return null;
 	}
 }

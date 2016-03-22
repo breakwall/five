@@ -14,10 +14,10 @@ public class TableHelper {
 		this.table = table;
 	}
 	
-	public boolean checkWin(Stone stone, Point point) {
-		List<Line> lines = Utils.getReferenceLines(point);
+	public boolean checkWin(Cell cell) {
+		List<Line> lines = Utils.getReferenceLines(cell);
 		for (Line line : lines) {
-			if (containsRow(stone, line)) {
+			if (containsRow(cell.getStone(), line)) {
 				return true;
 			}
 		}
@@ -29,7 +29,7 @@ public class TableHelper {
 		int times = 0;
 		
 		for (int i = 0 ; i < line.size(); i++) {
-			if (table.get(line.getPoint(i)).getStone() == stone) {
+			if (line.getCell(i).getStone() == stone) {
 				times ++;
 				if (times == 5) {
 					return true;
@@ -90,8 +90,7 @@ public class TableHelper {
 		return table;
 	}
 	
-	public void move(Stone stone, Point point) {
-		Cell cell = table.get(point.getX(), point.getY());
+	public void move(Stone stone, Cell cell) {
 		cell.setStone(stone);
 		progress.addStep(cell);
 	}

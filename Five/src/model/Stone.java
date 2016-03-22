@@ -1,8 +1,14 @@
 package model;
 
 public enum Stone {
-	BLACK, WHITE, NONE;
+	BLACK("B"), WHITE("W"), NONE("-");
 
+	public String str;
+	
+	private Stone (String str) {
+		this.str = str;
+	}
+	
 	public Stone getOpposite() {
 		switch (this) {
 		case BLACK:

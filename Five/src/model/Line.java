@@ -1,42 +1,41 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Line {
-	private List<Point> points;
+	private List<Cell> cells;
 	private Direction direction;
 
-	public Line(List<Point> points, Direction direction) {
-		this.points = points;
+	public Line(List<Cell> cells, Direction direction) {
+		this.cells = cells;
 		this.direction = direction;
 	}
 	
 	public int size() {
-		return points.size();
+		return cells.size();
 	}
 
 	public Direction getDirection() {
 		return direction;
 	}
 	
-	public List<Point> getPoints() {
-		return points;
+	public List<Cell> getCells() {
+		return cells;
 	}
 	
-	public Point getPoint(int index) {
-		return points.get(index);
+	public Cell getCell(int index) {
+		return cells.get(index);
 	}
 	
 	public Line getSubLine(int fromIndex, int toIndex) {
-		List<Point> list = points.subList(fromIndex, toIndex + 1);
+		List<Cell> list = cells.subList(fromIndex, toIndex + 1);
 		Line subLine = new Line(list, direction);
 		return subLine;
 	}
 	
-	public boolean containsPoint(Point point) {
-		for (Point p : points) {
-			if(p.equals(point)) {
+	public boolean containsCell(Cell cell) {
+		for (Cell p : cells) {
+			if(p.equals(cell)) {
 				return true;
 			}
 		}
@@ -44,19 +43,31 @@ public class Line {
 		return false;
 	}
 	
-	public Point getForwardPoint() {
-		Point fromPoint = points.get(0);
-		Direction dir = direction.getOpposite();
-		return Point.get(fromPoint.getX() + dir.x, fromPoint.getY() + dir.y);
+	public Cell getForwardCell() {
+		Cell fromCell = cells.get(0);
+		return fromCell.getNearbyCell(direction.getOpposite());
 	}
 	
-	public Point getBackwardPoint() {
-		Point toPoint = points.get(points.size() - 1);
-		return Point.get(toPoint.getX() + direction.x, toPoint.getY() + direction.y);
+	public Cell getBackwardCell() {
+		Cell toCell = cells.get(cells.size() - 1);
+		return toCell.getNearbyCell(direction);
+	}
+	
+	public int indexOf(Cell cell) {
+		return cells.indexOf(cell);
 	}
 	
 	@Override
 	public String toString() {
-		return points.get(0).toString() + "->" + points.get(points.size() - 1).toString();
+		StringBuffer sb = new StringBuffer();
+		sb.append(direction).append(":");
+		for (Cell c : cells) {
+			sb.append(c.getStone().str);
+		}
+		
+		sb.append(cells.get(0).getPoint());
+		sb.append("->");
+		sb.append(cells.get(cells.size() - 1).getPoint());
+		return sb.toString();
 	}
 }

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import model.Cell;
 import model.Direction;
 import model.Line;
 import model.Point;
+import model.Stone;
 import model.Table;
 
 public class Utils {
@@ -15,34 +17,73 @@ public class Utils {
 	
 	public static final Random RANDOM = new Random();
 	
-	public static List<Point> getLinePoints(Point point, Direction direction) {
-		List<Point> points = new ArrayList<Point>();
-		int x = point.getX();
-		int y = point.getY();
-		while (isInTableRange(x + direction.x) && isInTableRange(y + direction.y)) {
-			x = x + direction.x;
-			y = y + direction.y;
+	public static List<Cell> getLineCells(Cell cell, Direction direction) {
+		Cell startCell = cell;
+		Direction oppo = direction.getOpposite();
+		while(true) {
+			Cell c = startCell.getNearbyCell(oppo);
+			if (c == null) {
+				break;
+			}
+			startCell = c;
 		}
 		
-		Direction oppositeDirection = direction.getOpposite();
-		do {
-			points.add(Point.get(x, y));
-			x = x + oppositeDirection.x;
-			y = y + oppositeDirection.y;
-		} while (isInTableRange(x) && isInTableRange(y));
+		List<Cell> cells = new ArrayList<Cell>();
+		while(startCell != null) {
+			cells.add(startCell);
+			startCell = startCell.getNearbyCell(direction);
+		}
 		
-		return points;
+		return cells;
 	}
 	
-	public static List<Line> getReferenceLines(Point point) {
+	public static List<Line> getReferenceLines(Cell cell) {
 		List<Line> list = new ArrayList<Line>();
 		for (Direction direction : directions) {
-			List<Point> points = getLinePoints(point, direction);
-			Line line = new Line(points, direction.getOpposite());
+			List<Cell> cells = getLineCells(cell, direction);
+			Line line = new Line(cells, direction);
 			list.add(line);
 		}
 		
 		return list;
+	}
+	
+	public static int getWeightOfCell(Cell cell, Stone targetStone) {
+		int weight = 0;
+		for (Direction direction : directions) {
+			int numberOfCell = getNumberOfNearbyCell(cell, direction, targetStone);
+			weight = weight + (int)Math.pow(10, numberOfCell);
+		}
+		
+		return weight;
+	}
+	
+	private static int getNumberOfNearbyCell(Cell cell, Direction direction, Stone targetStone) {
+		int numberOfNearbyCell = 0;
+		int cellCapbility = 1;
+		for (Direction d : new Direction[] {direction, direction.getOpposite()}) {
+			boolean isNearby = true;
+			Cell nearby = cell.getNearbyCell(d);
+			while(nearby != null) {
+				if (isNearby && nearby.getStone() == targetStone) {
+					numberOfNearbyCell ++;
+				} else {
+					isNearby = false;
+				}
+				
+				if (nearby.getStone() == targetStone.getOpposite()) {
+					break;
+				}
+				cellCapbility ++;
+				nearby = nearby.getNearbyCell(d);
+			}
+		}
+		
+		if (cellCapbility >= 5) {
+			return numberOfNearbyCell;
+		}
+		
+		return 0;
 	}
 	
 	public static boolean isInTableRange(int i) {

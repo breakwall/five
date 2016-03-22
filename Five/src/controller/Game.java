@@ -3,8 +3,8 @@ package controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import model.Cell;
 import model.Computer;
-import model.Point;
 import model.Stone;
 import model.Table;
 import model.TableHelper;
@@ -26,27 +26,30 @@ public class Game {
 		Stone currentStone = Stone.BLACK;
 		while(true) {
 			Computer player = players.get(currentStone);
-			Point point = player.getStepPoint();
-			if (point == null) {
+			Cell cell = player.getStepCell();
+			if (cell == null) {
 				// game over
 				System.out.println(currentStone + " lose!");
 				table.print();
 				break;
 			}
 			
-			if (!table.isAvailable(point)) {
+			if (!table.isAvailable(cell.getPoint())) {
 				throw new RuntimeException("not available");
 			}
 			
-			tableHelper.move(currentStone, point);
+			tableHelper.move(currentStone, cell);
 			table.print();
 			
-			if (tableHelper.checkWin(currentStone, point)) {
+			if (tableHelper.checkWin(cell)) {
 				System.out.println(currentStone + " win!");
 				return true;
 			}
 			
 			currentStone = currentStone.getOpposite();
+//			if (tableHelper.getProgress().getCells().size() == 20) {
+//				break;
+//			}
 		}
 		
 		return false;

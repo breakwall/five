@@ -2,10 +2,12 @@ package model;
 
 public class Cell {
 	private final Point point;
+	private final Table table;
 	private Stone stone = Stone.NONE;
 	
-	public Cell(Point point) {
+	public Cell(Point point, Table table) {
 		this.point = point;
+		this.table = table;
 	}
 	
 	public void setStone(Stone stone) {
@@ -45,11 +47,17 @@ public class Cell {
 		return true;
 	}
 	
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (!(obj instanceof Cell)) {
-//			return false;
-//		}
-//		return point.equals(((Cell)obj).getPoint());
-//	}
+	public Cell getNearbyCell(Direction direction) {
+		Point p = point.translate(direction.x, direction.y);
+		if (p != null) {
+			return table.get(p);
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return stone.str + " " + point.toString();
+	}
 }

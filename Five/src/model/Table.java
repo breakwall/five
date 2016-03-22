@@ -14,7 +14,7 @@ public class Table {
 	private void initTable() {
 		for (int i = 0; i < COLUMN; i++) {
 			for (int j = 0 ; j < COLUMN; j++) {
-				tableModel[i][j] = new Cell(Point.get(i, j));
+				tableModel[i][j] = new Cell(Point.get(i, j), this);
 			}
 		}
 	}
