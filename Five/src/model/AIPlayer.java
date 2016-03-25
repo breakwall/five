@@ -1,36 +1,35 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import controller.Utils;
 
-public class Computer {
+public class AIPlayer implements IPlayer{
 	
 	private Stone stone;
-	private TableHelper tableHelper;
-	public Computer(Stone stone, TableHelper tableHelper) {
+	private BoardHelper boardHelper;
+	public AIPlayer(Stone stone, BoardHelper boardHelper) {
 		this.stone = stone;
-		this.tableHelper = tableHelper;
+		this.boardHelper = boardHelper;
 	}
 	
-	public Cell getStepCell() {
-		Step lastStep = tableHelper.getLastStep();
+	public Cell getMove() {
+		Step lastStep = boardHelper.getLastStep();
 		if (lastStep == null) {
-			Point point = Utils.random(Point.get(Table.COLUMN / 2, Table.COLUMN / 2), 2);
-			return tableHelper.getTable().get(point);
+			Point point = Utils.random(Point.get(Board.COLUMN / 2, Board.COLUMN / 2), 2);
+			return boardHelper.getBoard().get(point);
 		}
 		
-		List<Cell> cells = tableHelper.getProgress().getCells(stone);
+		List<Cell> cells = boardHelper.getProgress().getCells(stone);
 		if (cells.size() < 1) {
 			Cell lastCell = lastStep.getCell();
-			List<Cell> available = tableHelper.getNearAvailable(lastCell.getPoint());
+			List<Cell> available = boardHelper.getNearAvailable(lastCell.getPoint());
 			if (!available.isEmpty()) {
 				return available.get(Utils.random(available.size()));
 			}
 		}
 		
-		List<Cell> nearAvailable = tableHelper.getNearAvailable();
+		List<Cell> nearAvailable = boardHelper.getNearAvailable();
 		if (nearAvailable.isEmpty()) {
 			return null;
 		}

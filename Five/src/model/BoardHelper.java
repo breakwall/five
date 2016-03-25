@@ -7,11 +7,13 @@ import java.util.Set;
 
 import controller.Utils;
 
-public class TableHelper {
-	private Table table;
+public class BoardHelper {
+	private Board board;
 	private Progress progress = new Progress();
-	public TableHelper(Table table) {
-		this.table = table;
+	private int tryMoveTimes = -1;
+	
+	public BoardHelper(Board board) {
+		this.board = board;
 	}
 	
 	public boolean checkWin(Cell cell) {
@@ -47,14 +49,14 @@ public class TableHelper {
 		List<Cell> list = new ArrayList<Cell>();
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
-				if (x + i < 0 || x + i >= Table.COLUMN || y + j < 0
-						|| y + j >= Table.COLUMN) {
+				if (x + i < 0 || x + i >= Board.COLUMN || y + j < 0
+						|| y + j >= Board.COLUMN) {
 					continue;
 				}
 				
 				Point p = Point.get(x + i, y + j);
-				if (table.isAvailable(p)) {
-					list.add(table.get(p));
+				if (board.isAvailable(p)) {
+					list.add(board.get(p));
 				}
 			}
 		}
@@ -86,12 +88,29 @@ public class TableHelper {
 		return progress;
 	}
 	
-	public Table getTable() {
-		return table;
+	public Board getBoard() {
+		return board;
 	}
 	
 	public void move(Stone stone, Cell cell) {
 		cell.setStone(stone);
 		progress.addStep(cell);
+	}
+	
+	public void tryMove(Stone stone, Cell cell) {
+		move(stone, cell);
+		tryMoveTimes++;
+	}
+	
+	/**
+	 * clean the try moves
+	 */
+	public void rollbackTry() {
+		if (tryMoveTimes == 0) {
+			return;
+		}
+		
+		progress.removeStep(progress.size() - 1);
+		tryMoveTimes--;
 	}
 }

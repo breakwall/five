@@ -4,52 +4,49 @@ import java.util.HashMap;
 import java.util.Map;
 
 import model.Cell;
-import model.Computer;
+import model.AIPlayer;
 import model.Stone;
-import model.Table;
-import model.TableHelper;
+import model.Board;
+import model.BoardHelper;
 
 public class Game {
-	private Table table;
-	private TableHelper tableHelper;
+	private Board board;
+	private BoardHelper boardHelper;
 	
 	public boolean start() {
-		table = new Table();
-		tableHelper = new TableHelper(table);
+		board = new Board();
+		boardHelper = new BoardHelper(board);
 		
-		Computer c1 = new Computer(Stone.BLACK, tableHelper);
-		Computer c2 = new Computer(Stone.WHITE, tableHelper);
-		Map<Stone, Computer> players = new HashMap<>();
+		AIPlayer c1 = new AIPlayer(Stone.BLACK, boardHelper);
+		AIPlayer c2 = new AIPlayer(Stone.WHITE, boardHelper);
+		Map<Stone, AIPlayer> players = new HashMap<>();
 		players.put(Stone.BLACK, c1);
 		players.put(Stone.WHITE, c2);
 		
 		Stone currentStone = Stone.BLACK;
 		while(true) {
-			Computer player = players.get(currentStone);
-			Cell cell = player.getStepCell();
+			AIPlayer player = players.get(currentStone);
+			Cell cell = player.getMove();
 			if (cell == null) {
 				// game over
 				System.out.println(currentStone + " lose!");
-				table.print();
+				board.print();
 				break;
 			}
 			
-			if (!table.isAvailable(cell.getPoint())) {
+			if (!board.isAvailable(cell.getPoint())) {
 				throw new RuntimeException("not available");
 			}
 			
-			tableHelper.move(currentStone, cell);
-			table.print();
+			boardHelper.move(currentStone, cell);
+			board.print();
 			
-			if (tableHelper.checkWin(cell)) {
+			if (boardHelper.checkWin(cell)) {
 				System.out.println(currentStone + " win!");
 				return true;
 			}
 			
 			currentStone = currentStone.getOpposite();
-//			if (tableHelper.getProgress().getCells().size() == 20) {
-//				break;
-//			}
 		}
 		
 		return false;

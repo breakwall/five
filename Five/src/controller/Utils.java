@@ -9,7 +9,7 @@ import model.Direction;
 import model.Line;
 import model.Point;
 import model.Stone;
-import model.Table;
+import model.Board;
 
 public class Utils {
 	
@@ -17,10 +17,10 @@ public class Utils {
 	
 	public static final Random RANDOM = new Random();
 	
-	public static List<Cell> getLineCells(Cell cell, Direction direction) {
-		Cell startCell = cell;
+	public static List<Cell> getLineCells(Cell cellInLine, Direction direction) {
+		Cell startCell = cellInLine;
 		Direction oppo = direction.getOpposite();
-		while(true) {
+		for (int i = 0; i < 4; i++) {
 			Cell c = startCell.getNearbyCell(oppo);
 			if (c == null) {
 				break;
@@ -29,9 +29,13 @@ public class Utils {
 		}
 		
 		List<Cell> cells = new ArrayList<Cell>();
-		while(startCell != null) {
-			cells.add(startCell);
-			startCell = startCell.getNearbyCell(direction);
+		Cell cell = startCell;
+		for (int i = 0; i < 9; i++) {
+			cells.add(cell);
+			cell = cell.getNearbyCell(direction);
+			if (cell ==null) {
+				break;
+			}
 		}
 		
 		return cells;
@@ -41,8 +45,10 @@ public class Utils {
 		List<Line> list = new ArrayList<Line>();
 		for (Direction direction : directions) {
 			List<Cell> cells = getLineCells(cell, direction);
-			Line line = new Line(cells, direction);
-			list.add(line);
+			if (cells.size() >= 5) {
+				Line line = new Line(cells, direction);
+				list.add(line);
+			}
 		}
 		
 		return list;
@@ -86,12 +92,12 @@ public class Utils {
 		return 0;
 	}
 	
-	public static boolean isInTableRange(int i) {
-		return i >= 0 && i < Table.COLUMN;
+	public static boolean isInBoardRange(int i) {
+		return i >= 0 && i < Board.COLUMN;
 	}
 	
-	public static boolean isInTableRange(Point p) {
-		return isInTableRange(p.getX()) && isInTableRange(p.getY());
+	public static boolean isInBoardRange(Point p) {
+		return isInBoardRange(p.getX()) && isInBoardRange(p.getY());
 	}
 	
 	public static int random(int range) {
@@ -107,9 +113,9 @@ public class Utils {
 		int x = point.getX();
 		int y = point.getY();
 		int xRangeStart = x - range < 0 ? 0 : x - range;
-		int xRangeEnd = x + range >= Table.COLUMN ? Table.COLUMN - 1 : x + range;
+		int xRangeEnd = x + range >= Board.COLUMN ? Board.COLUMN - 1 : x + range;
 		int yRangeStart = y - range < 0 ? 0 : y - range;
-		int yRangeEnd = y + range >= Table.COLUMN ? Table.COLUMN - 1 : y + range;
+		int yRangeEnd = y + range >= Board.COLUMN ? Board.COLUMN - 1 : y + range;
 		return Point.get(random(xRangeStart, xRangeEnd), random(yRangeStart, yRangeEnd));
 	}
 }

@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Line {
@@ -9,6 +10,19 @@ public class Line {
 	public Line(List<Cell> cells, Direction direction) {
 		this.cells = cells;
 		this.direction = direction;
+	}
+	
+	public Line(Cell from, Direction direction) {
+		this(calcCells(from, direction), direction);
+	}
+	
+	private static List<Cell> calcCells(Cell from, Direction direction) {
+		List<Cell> cells = new ArrayList<Cell>();
+		for (Cell cell = from; cell != null; cell = cell
+				.getNearbyCell(direction)) {
+			cells.add(cell);
+		}
+		return cells;
 	}
 	
 	public int size() {

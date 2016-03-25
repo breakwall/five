@@ -2,12 +2,12 @@ package model;
 
 public class Cell {
 	private final Point point;
-	private final Table table;
+	private final Board board;
 	private Stone stone = Stone.NONE;
 	
-	public Cell(Point point, Table table) {
+	public Cell(Point point, Board board) {
 		this.point = point;
-		this.table = table;
+		this.board = board;
 	}
 	
 	public void setStone(Stone stone) {
@@ -50,7 +50,7 @@ public class Cell {
 	public Cell getNearbyCell(Direction direction) {
 		Point p = point.translate(direction.x, direction.y);
 		if (p != null) {
-			return table.get(p);
+			return board.get(p);
 		}
 		
 		return null;

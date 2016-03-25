@@ -13,7 +13,7 @@ public class Point {
 		String key = getKey(x, y);
 		Point point = cache.get(key);
 		if (point == null) {
-			if (Utils.isInTableRange(x) && Utils.isInTableRange(y)) {
+			if (Utils.isInBoardRange(x) && Utils.isInBoardRange(y)) {
 				point = new Point(x, y);
 				cache.put(key, point);
 			}

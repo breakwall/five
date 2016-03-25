@@ -3,18 +3,18 @@ package model;
 import controller.Utils;
 
 
-public class Table {
+public class Board {
 	public static final int COLUMN = 15;
-	private Cell[][] tableModel = new Cell[COLUMN][COLUMN];
+	private Cell[][] model = new Cell[COLUMN][COLUMN];
 	
-	public Table() {
-		initTable();
+	public Board() {
+		initBoard();
 	}
 	
-	private void initTable() {
+	private void initBoard() {
 		for (int i = 0; i < COLUMN; i++) {
 			for (int j = 0 ; j < COLUMN; j++) {
-				tableModel[i][j] = new Cell(Point.get(i, j), this);
+				model[i][j] = new Cell(Point.get(i, j), this);
 			}
 		}
 	}
@@ -22,15 +22,15 @@ public class Table {
 	public boolean isAvailable(Point point) {
 		int x = point.getX();
 		int y = point.getY();
-		if (Utils.isInTableRange(x) && Utils.isInTableRange(y)) {
-			return tableModel[x][y].getStone().equals(Stone.NONE);
+		if (Utils.isInBoardRange(x) && Utils.isInBoardRange(y)) {
+			return model[x][y].getStone().equals(Stone.NONE);
 		}
 		
 		return false;
 	}
 	
 	public Cell get(int x, int y) {
-		return tableModel[x][y];
+		return model[x][y];
 	}
 	
 	public Cell get(Point point) {
@@ -43,7 +43,7 @@ public class Table {
 			StringBuffer sb = new StringBuffer();
 			for (int j= 0; j< COLUMN; j++) {
 				String str;
-				switch (tableModel[j][i].getStone()) {
+				switch (model[j][i].getStone()) {
 				case BLACK:
 					str = "x ";
 					break;

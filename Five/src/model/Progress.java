@@ -51,4 +51,12 @@ public class Progress {
 		
 		return cells;
 	}
+	
+	public int size() {
+		return steps.size();
+	}
+	
+	public void removeStep(int index) {
+		steps.remove(index);
+	}
 }
