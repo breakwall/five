@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import model.Board;
 import model.Cell;
 import model.Direction;
 import model.Line;
 import model.Point;
 import model.Stone;
-import model.Board;
 
 public class Utils {
 	
@@ -117,5 +117,13 @@ public class Utils {
 		int yRangeStart = y - range < 0 ? 0 : y - range;
 		int yRangeEnd = y + range >= Board.COLUMN ? Board.COLUMN - 1 : y + range;
 		return Point.get(random(xRangeStart, xRangeEnd), random(yRangeStart, yRangeEnd));
+	}
+	
+	public static String getStrPattern(String pattern, Stone currentStone) {
+		String strPattern = pattern;
+		strPattern = strPattern.replace("1", currentStone.str);
+		strPattern = strPattern.replace("0", Stone.NONE.str);
+		strPattern = strPattern.replace("2", currentStone.getOpposite().str);
+		return strPattern;
 	}
 }
