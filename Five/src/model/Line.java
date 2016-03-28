@@ -71,6 +71,15 @@ public class Line {
 		return cells.indexOf(cell);
 	}
 	
+	public String getStr() {
+		StringBuffer sb = new StringBuffer();
+		for (Cell c : cells) {
+			sb.append(c.getStone().str);
+		}
+		
+		return sb.toString();
+	}
+	
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
