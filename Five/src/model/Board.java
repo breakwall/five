@@ -36,27 +36,4 @@ public class Board {
 	public Cell get(Point point) {
 		return get(point.getX(), point.getY());
 	}
-	
-	public void print() {
-		System.out.println("0 1 2 3 4 5 6 7 8 9 0 1 2 3 4");
-		for(int i = 0; i < COLUMN; i++) {
-			StringBuffer sb = new StringBuffer();
-			for (int j= 0; j< COLUMN; j++) {
-				String str;
-				switch (model[j][i].getStone()) {
-				case BLACK:
-					str = "x ";
-					break;
-				case WHITE:
-					str = "o ";
-					break;
-				default:
-					str = "- ";
-					break;
-				}
-				sb.append(str);
-			}
-			System.out.println(sb.toString() + i);
-		}
-	}
 }

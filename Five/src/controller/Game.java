@@ -3,6 +3,7 @@ package controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import logger.GameLogger;
 import model.Cell;
 import model.AIPlayer;
 import model.Stone;
@@ -19,7 +20,7 @@ public class Game {
 		
 		AIPlayer c1 = new AIPlayer(Stone.BLACK, boardHelper);
 		AIPlayer c2 = new AIPlayer(Stone.WHITE, boardHelper);
-		Map<Stone, AIPlayer> players = new HashMap<>();
+		Map<Stone, AIPlayer> players = new HashMap<Stone, AIPlayer>();
 		players.put(Stone.BLACK, c1);
 		players.put(Stone.WHITE, c2);
 		
@@ -29,8 +30,8 @@ public class Game {
 			Cell cell = player.getMove();
 			if (cell == null) {
 				// game over
-				System.out.println(currentStone + " lose!");
-				board.print();
+				GameLogger.getInstance().logInfo(currentStone + " give up!");
+				GameLogger.getInstance().logDebug(boardHelper.getBoardStr());
 				break;
 			}
 			
@@ -39,10 +40,10 @@ public class Game {
 			}
 			
 			boardHelper.move(currentStone, cell);
-			board.print();
+			GameLogger.getInstance().logDebug(boardHelper.getBoardStr());
 			
 			if (boardHelper.checkWin(cell)) {
-				System.out.println(currentStone + " win!");
+				GameLogger.getInstance().logInfo(currentStone + " win!");
 				return true;
 			}
 			

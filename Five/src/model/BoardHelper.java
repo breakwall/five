@@ -5,19 +5,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import logger.GameLogger;
+
 import controller.Utils;
 
 public class BoardHelper {
 	private Board board;
 	private Progress progress = new Progress();
-	private int tryMoveTimes = -1;
+	private int tryMoveTimes = 0;
 	
 	public BoardHelper(Board board) {
 		this.board = board;
 	}
 	
 	public boolean checkWin(Cell cell) {
-		List<Line> lines = Utils.getReferenceLines(cell);
+		List<Line> lines = Utils.getReferenceLines(cell, false);
 		for (Line line : lines) {
 			if (containsRow(cell.getStone(), line)) {
 				return true;
@@ -73,17 +75,6 @@ public class BoardHelper {
 		return new ArrayList<Cell>(all);
 	}
 	
-	public Step getLastStep() {
-		return progress.getLastStep();
-	}
-	
-//	public Map<Integer, Line> getRow(Stone stone) {
-//		List<Cell> cells = progress.getCells(stone);
-//		for (Cell cell : cells) {
-//			List<Line> lines = Utils.getReferenceLines(cell.getPoint());
-//		}
-//	}
-	
 	public Progress getProgress() {
 		return progress;
 	}
@@ -94,11 +85,13 @@ public class BoardHelper {
 	
 	public void move(Stone stone, Cell cell) {
 		cell.setStone(stone);
-		progress.addStep(cell);
+		progress.addCell(cell);
+		GameLogger.getInstance().logInfo(progress.size() + "-> stone: " + cell.getStone() + ", point: " + cell.getPoint());
 	}
 	
 	public void tryMove(Stone stone, Cell cell) {
-		move(stone, cell);
+		cell.setStone(stone);
+		progress.addCell(cell);
 		tryMoveTimes++;
 	}
 	
@@ -109,8 +102,44 @@ public class BoardHelper {
 		if (tryMoveTimes == 0) {
 			return;
 		}
-		
-		progress.removeStep(progress.size() - 1);
+		Cell cell = progress.getLastCell();
+		cell.setStone(Stone.NONE);
+		progress.rollback();
 		tryMoveTimes--;
+	}
+	
+	public int getTryMoveTimes() {
+		return tryMoveTimes;
+	}
+	
+	public String getBoardStr() {
+		StringBuffer sb = new StringBuffer();
+		Point lastCellPoint = progress.getLastCell().getPoint();
+		sb.append("\n0 1 2 3 4 5 6 7 8 9 0 1 2 3 4\n");
+		for(int i = 0; i < Board.COLUMN; i++) {
+			for (int j= 0; j< Board.COLUMN; j++) {
+				String str;
+				switch (board.get(j, i).getStone()) {
+				case BLACK:
+					str = "x";
+					break;
+				case WHITE:
+					str = "o";
+					break;
+				default:
+					str = "-";
+					break;
+				}
+				sb.append(str);
+				if (lastCellPoint.getX() == j && lastCellPoint.getY() == i) {
+					sb.append(".");
+				} else {
+					sb.append(" ");
+				}
+			}
+			sb.append(i).append("\n");
+		}
+		
+		return sb.toString();
 	}
 }

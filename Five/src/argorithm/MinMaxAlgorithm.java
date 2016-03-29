@@ -2,75 +2,92 @@ package argorithm;
 
 import java.util.List;
 
+import logger.GameLogger;
 import model.BoardHelper;
 import model.Cell;
 import model.Stone;
 
 public class MinMaxAlgorithm {
-	
-	private BoardEvaluator evaluator;
-	private BoardHelper boardHelper;
-	public MinMaxAlgorithm(BoardHelper boardHelper) {
+
+	private final BoardEvaluator evaluator;
+	private final BoardHelper boardHelper;
+	private final Stone stone;
+	private final GameLogger logger = GameLogger.getInstance();
+
+	public MinMaxAlgorithm(Stone stone, BoardHelper boardHelper) {
 		this.boardHelper = boardHelper;
-		this.evaluator = new BoardEvaluator(boardHelper);
+		this.stone = stone;
+		this.evaluator = new BoardEvaluator(stone, boardHelper);
 	}
-	
-	public Cell getBestMove(Stone stone, int depth) {
+
+	public Cell getBestMove(int depth) {
+		MoveAndValue moveAndValue= doGetMaxMove(null, depth);
+		return moveAndValue.cell;
+	}
+
+	private MoveAndValue doGetMaxMove(Cell lastMove, int depth) {
+		if (lastMove != null && boardHelper.checkWin(lastMove)) {
+			int value = evaluator.evaluate();
+			logger.logDebug("return because check "+ lastMove.getStone() +" is win.");
+			return new MoveAndValue(lastMove, value);
+		}
+
+		if (depth == 0) {
+			int value = evaluator.evaluate();
+			logger.logDebug("return because depth is 0.");
+			return new MoveAndValue(lastMove, value);
+		}
+
 		List<Cell> cells = boardHelper.getNearAvailable();
 		if (cells.isEmpty()) {
-			return null;
+			int value = evaluator.evaluate();
+			logger.logDebug("return because there is no available cell to move.");
+			return new MoveAndValue(lastMove, value);
 		}
-		
-		int maxValue = 0;
-		Cell bestCell = null;
-		for (Cell nearCell : cells) {
-			boardHelper.tryMove(stone, nearCell);
-			int value = doGetMinMove(stone, depth - 1);
-			if (value > maxValue) {
-				maxValue = value;
-				bestCell = nearCell;
-			}
-			boardHelper.rollbackTry();
-		}
-		
-		return bestCell;
-	}
-	
-	private int doGetMaxMove(Stone stone, int depth) {
-		List<Cell> cells = boardHelper.getNearAvailable();
-		if (cells.isEmpty() || depth == 0) {
-			return evaluator.evaluate(stone);
-		}
-		
-		int maxValue = 0;
+
+		boolean isMaxNode = isMaxNode(lastMove);
+		int minMaxValue = isMaxNode ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+		Stone targetStone = isMaxNode ? stone : stone.getOpposite();
+
+		Cell minMaxCell = null;
 		for(Cell cell : cells) {
-			boardHelper.tryMove(stone, cell);
-			int value = doGetMinMove(stone, depth - 1);
-			if (value > maxValue) {
-				maxValue = value;
+			boardHelper.tryMove(targetStone, cell);
+			logger.logDebug("depth: " + depth + ", try Move " + targetStone + ", " + cell);
+			logger.logDebug(boardHelper.getBoardStr());
+			int value = doGetMaxMove(cell, depth - 1).value;
+			logger.logDebug("depth: " + depth + ", value is " + value);
+			if (isMaxNode) {
+				// max
+	 			if (value > minMaxValue) {
+					minMaxValue = value;
+					minMaxCell = cell;
+					logger.logDebug("depth: " + depth + ", max value: " + minMaxValue);
+				}
+			} else {
+				// min
+	 			if (value < minMaxValue) {
+					minMaxValue = value;
+					minMaxCell = cell;
+					logger.logDebug("depth: " + depth + ", min value: " + minMaxValue);
+				}
 			}
 			boardHelper.rollbackTry();
 		}
-		
-		return maxValue;
+
+		return new MoveAndValue(minMaxCell, minMaxValue);
 	}
-	
-	private int doGetMinMove(Stone stone, int depth) {
-		List<Cell> cells = boardHelper.getNearAvailable();
-		if (cells.isEmpty() || depth == 0) {
-			return evaluator.evaluate(stone);
+
+	private boolean isMaxNode(Cell lastMove) {
+		return lastMove == null || lastMove.getStone() == stone.getOpposite();
+	}
+
+	private class MoveAndValue {
+		Cell cell;
+		int value;
+
+		public MoveAndValue(Cell cell, int value) {
+			this.cell = cell;
+			this.value = value;
 		}
-		
-		int minValue = 0;
-		for(Cell cell : cells) {
-			boardHelper.tryMove(stone.getOpposite(), cell);
-			int value = doGetMaxMove(stone, depth - 1);
-			if (value < minValue) {
-				minValue = value;
-			}
-			boardHelper.rollbackTry();
-		}
-		
-		return minValue;
 	}
 }

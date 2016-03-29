@@ -17,10 +17,17 @@ public class Utils {
 	
 	public static final Random RANDOM = new Random();
 	
-	public static List<Cell> getLineCells(Cell cellInLine, Direction direction) {
+	public static List<Cell> getLineCells(Cell cellInLine, Direction direction, boolean fullLine) {
 		Cell startCell = cellInLine;
 		Direction oppo = direction.getOpposite();
-		for (int i = 0; i < 4; i++) {
+		
+		int maxlineSize = 21;
+		if (fullLine == false) {
+			maxlineSize = 9;
+		}
+		int maxHalfSize = maxlineSize / 2;
+		
+		for (int i = 0; i < maxHalfSize; i++) {
 			Cell c = startCell.getNearbyCell(oppo);
 			if (c == null) {
 				break;
@@ -30,10 +37,10 @@ public class Utils {
 		
 		List<Cell> cells = new ArrayList<Cell>();
 		Cell cell = startCell;
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i < maxlineSize; i++) {
 			cells.add(cell);
 			cell = cell.getNearbyCell(direction);
-			if (cell ==null) {
+			if (cell == null) {
 				break;
 			}
 		}
@@ -41,10 +48,10 @@ public class Utils {
 		return cells;
 	}
 	
-	public static List<Line> getReferenceLines(Cell cell) {
+	public static List<Line> getReferenceLines(Cell cell, boolean fullLine) {
 		List<Line> list = new ArrayList<Line>();
 		for (Direction direction : directions) {
-			List<Cell> cells = getLineCells(cell, direction);
+			List<Cell> cells = getLineCells(cell, direction, fullLine);
 			if (cells.size() >= 5) {
 				Line line = new Line(cells, direction);
 				list.add(line);

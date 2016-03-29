@@ -7,7 +7,7 @@ import controller.Utils;
 
 public class Point {
 	
-	private static Map<String, Point> cache = new HashMap<>();
+	private static Map<String, Point> cache = new HashMap<String, Point>();
 	
 	public static Point get(int x, int y) {
 		String key = getKey(x, y);

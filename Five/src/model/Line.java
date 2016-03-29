@@ -71,10 +71,29 @@ public class Line {
 		return cells.indexOf(cell);
 	}
 	
-	public String getStr() {
+	public String getStr(Stone currentFocus) {
 		StringBuffer sb = new StringBuffer();
+		
+		Cell forwardCell = getForwardCell();
+		if (forwardCell == null
+				|| forwardCell.getStone() == currentFocus.getOpposite()) {
+			sb.append("2");
+		}
+		
 		for (Cell c : cells) {
-			sb.append(c.getStone().str);
+			if (c.getStone() == currentFocus) {
+				sb.append("1");
+			} else if (c.getStone() == currentFocus.getOpposite()) {
+				sb.append("2");
+			} else {
+				sb.append("0");
+			}
+		}
+		
+		Cell backwardCell = getForwardCell();
+		if (backwardCell == null
+				|| backwardCell.getStone() == currentFocus.getOpposite()) {
+			sb.append("2");
 		}
 		
 		return sb.toString();
@@ -93,4 +112,35 @@ public class Line {
 		sb.append(cells.get(cells.size() - 1).getPoint());
 		return sb.toString();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cells == null) ? 0 : cells.hashCode());
+		result = prime * result
+				+ ((direction == null) ? 0 : direction.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Line other = (Line) obj;
+		if (cells == null) {
+			if (other.cells != null)
+				return false;
+		} else if (!cells.equals(other.cells))
+			return false;
+		if (direction != other.direction)
+			return false;
+		return true;
+	}
+	
+	
 }
