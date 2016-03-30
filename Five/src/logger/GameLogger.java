@@ -3,6 +3,7 @@ package logger;
 import java.io.IOException;
 import java.util.Date;
 import java.util.logging.FileHandler;
+import java.util.logging.Filter;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -13,10 +14,23 @@ public class GameLogger {
 	private Logger logger = Logger.getLogger("game logger");
 	private GameLogger() {
 		try {
-			logger.setLevel(Level.FINE);
-			FileHandler handler = new FileHandler("log", 0, 10, false);
+			logger.setLevel(Level.FINER);
+			FileHandler handler = new FileHandler("moves_%g.txt", 0, 2, false);
+			handler.setLevel(Level.FINE);
 			handler.setFormatter(new LogFormatter());
 			logger.addHandler(handler);
+
+			FileHandler handler2 = new FileHandler("values_%g.txt", 0, 2, false);
+			handler2.setLevel(Level.FINER);
+			handler2.setFormatter(new LogFormatter());
+			handler2.setFilter(new Filter() {
+
+				@Override
+				public boolean isLoggable(LogRecord record) {
+					return record.getLevel() == Level.FINER;
+				}
+			});
+			logger.addHandler(handler2);
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -34,6 +48,10 @@ public class GameLogger {
 
 	public void logDebug(String message) {
 		logger.log(Level.FINE, message);
+	}
+
+	public void logFiner(String message) {
+		logger.log(Level.FINER, message);
 	}
 
 	class LogFormatter extends Formatter {

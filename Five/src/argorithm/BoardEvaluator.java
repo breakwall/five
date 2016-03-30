@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import logger.GameLogger;
 import model.BoardHelper;
 import model.Cell;
 import model.Line;
@@ -18,6 +19,7 @@ public class BoardEvaluator {
 	private BoardHelper boardHelper;
 	private Stone stone;
 	private Set<Line> visitedLines = new HashSet<Line>();
+	private GameLogger gameLogger = GameLogger.getInstance();
 
 	private enum Type {
 		LIAN5, HUO4, CHONG4, HUO3, MIAN3, HUO2, MIAN2, OTHER, POLLUTED
@@ -39,7 +41,7 @@ public class BoardEvaluator {
 		typePatternMap.put(Type.HUO3, new String[] { "001110", "011100", "010110", "011010", });
 		typePatternMap.put(Type.MIAN3, new String[] { "001112", "211100", "010112", "211010", "011012", "210110", "10011", "11001", "10101", "2011102" });
 		typePatternMap.put(Type.HUO2, new String[] { "001100", "001010", "010100", "010010", });
-		
+
 		typeScoreMap.put(Type.LIAN5, Integer.valueOf(50000));
 		typeScoreMap.put(Type.HUO4, Integer.valueOf(20000));
 		typeScoreMap.put(Type.CHONG4, Integer.valueOf(10000));
@@ -48,24 +50,25 @@ public class BoardEvaluator {
 		typeScoreMap.put(Type.HUO2, Integer.valueOf(400));
 	}
 
-	public int evaluate() {
+	public int evaluate(String boardId) {
 		stoneMap.clear();
 		stoneMap.put(stone, new LineTypeMap());
-		stoneMap.put(stone.getOpposite(), new LineTypeMap());	
+		stoneMap.put(stone.getOpposite(), new LineTypeMap());
 		for (Cell cell : boardHelper.getNearAvailable()) {
 			List<Line> lines = Utils.getReferenceLines(cell, true);
 			for (Line line : lines) {
 				if (visitedLines.contains(lines)) {
 					continue;
 				}
-				
+
 				visitorLine(line, stone);
 				visitorLine(line, stone.getOpposite());
-				
+
 				visitedLines.add(line);
 			}
 		}
 
+		StringBuffer sb = new StringBuffer();
 		int totalValue = 0;
 		for(Entry<Stone, LineTypeMap> e : stoneMap.entrySet()) {
 			Stone targetStone = e.getKey();
@@ -73,10 +76,11 @@ public class BoardEvaluator {
 			int posNeg = (targetStone == stone) ? 1 : -1;
 			for(Entry<Line, Type> ee : lineTypeMap.entrySet()) {
 				int value = posNeg * typeScoreMap.get(ee.getValue());
+				sb.append(targetStone.str).append(" ").append(ee.getValue()).append(":").append(value).append(";");
 				totalValue += value;
 			}
 		}
-		
+		gameLogger.logFiner(boardId + "("+ totalValue + "):" + sb.toString());
 		return totalValue;
 	}
 
@@ -97,13 +101,13 @@ public class BoardEvaluator {
 			}
 		}
 	}
-	
+
 	private class LineTypeMap {
 		Map<Line, Type> map = new HashMap<Line, Type>();
 		private void put(Line line, Type type) {
 			map.put(line, type);
 		}
-		
+
 		private Set<Entry<Line, Type>> entrySet() {
 			return map.entrySet();
 		}
