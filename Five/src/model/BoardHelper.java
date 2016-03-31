@@ -19,7 +19,7 @@ public class BoardHelper {
 	}
 
 	public boolean checkWin(Cell cell) {
-		List<Line> lines = Utils.getReferenceLines(cell, false);
+		List<Line> lines = Utils.getReferenceLines2(cell);
 		for (Line line : lines) {
 			if (containsRow(cell.getStone(), line)) {
 				return true;

@@ -51,8 +51,12 @@ public class Cell {
 		return board.get(point.getX() + direction.x, point.getY() + direction.y);
 	}
 
+	public Board getBoard() {
+		return board;
+	}
+
 	@Override
 	public String toString() {
-		return stone.str + " " + point.toString();
+		return stone.chr + " " + point.toString();
 	}
 }

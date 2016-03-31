@@ -1,7 +1,6 @@
 package model;
 
 import argorithm.MinMaxAlgorithm;
-import controller.Utils;
 
 public class AIPlayer implements IPlayer{
 
@@ -18,10 +17,9 @@ public class AIPlayer implements IPlayer{
 	public Cell getMove() {
 		int size = boardHelper.getProgress().size();
 		if (size == 0) {
-			Point point = Utils.random(Point.get(Board.COLUMN / 2, Board.COLUMN / 2), 2);
-			return boardHelper.getBoard().get(point);
+			return boardHelper.getBoard().get(Board.COLUMN / 2, Board.COLUMN / 2);
 		}
 
-		return algorithm.getBestMove(4);
+		return algorithm.getBestMove(2);
 	}
 }

@@ -17,7 +17,7 @@ public class MinMaxAlgorithm {
 	private final Stone stone;
 	private final GameLogger logger = GameLogger.getInstance();
 	private final Map<MoveAndValue, List<MoveAndValue>> map = new HashMap<MoveAndValue, List<MoveAndValue>>();
-	private static int count = 0;
+	private static int evaluationCount = 0;
 
 	public MinMaxAlgorithm(Stone stone, BoardHelper boardHelper) {
 		this.boardHelper = boardHelper;
@@ -27,8 +27,11 @@ public class MinMaxAlgorithm {
 
 	public Cell getBestMove(int depth) {
 		map.clear();
+		int thisCount = evaluationCount;
 		MoveAndValue moveAndValue= doGetMinMaxMove(null, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
-//		printTree(moveAndValue, "(" + moveAndValue.value + ")");
+		thisCount = evaluationCount - thisCount;
+		logger.logInfo("evaluation count: " + thisCount);
+		printTree(moveAndValue, "(" + moveAndValue.value + ")");
 		return moveAndValue.cell;
 	}
 
@@ -41,28 +44,30 @@ public class MinMaxAlgorithm {
 		}
 
 		for(MoveAndValue mav : list) {
-			printTree(mav, s + "->" + mav.toString());
+			if (mav.value == parent.value) {
+				printTree(mav, s + "->" + mav.toString());
+			}
 		}
 	}
 
 	private MoveAndValue doGetMinMaxMove(Cell lastTryMove, int depth, int alpha, int beta) {
 		if (lastTryMove != null && boardHelper.checkWin(lastTryMove)) {
-			count++;
-			int value = evaluator.evaluate(count);
-			return new MoveAndValue(lastTryMove, value, count);
+			evaluationCount++;
+			int value = evaluator.evaluate(evaluationCount);
+			return new MoveAndValue(lastTryMove, value, evaluationCount);
 		}
 
 		if (depth == 0) {
-			count++;
-			int value = evaluator.evaluate(count);
-			return new MoveAndValue(lastTryMove, value, count);
+			evaluationCount++;
+			int value = evaluator.evaluate(evaluationCount);
+			return new MoveAndValue(lastTryMove, value, evaluationCount);
 		}
 
 		List<Cell> cells = boardHelper.getNearAvailable();
 		if (cells.isEmpty()) {
-			count++;
-			int value = evaluator.evaluate(count);
-			return new MoveAndValue(lastTryMove, value, count);
+			evaluationCount++;
+			int value = evaluator.evaluate(evaluationCount);
+			return new MoveAndValue(lastTryMove, value, evaluationCount);
 		}
 
 		boolean isMaxNode = isMaxNode(lastTryMove);
