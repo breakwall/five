@@ -50,7 +50,7 @@ public class BoardEvaluator {
 		typeScoreMap.put(Type.HUO2, Integer.valueOf(400));
 	}
 
-	public int evaluate(String boardId) {
+	public int evaluate(int boardId) {
 		stoneMap.clear();
 		stoneMap.put(stone, new LineTypeMap());
 		stoneMap.put(stone.getOpposite(), new LineTypeMap());
@@ -68,7 +68,7 @@ public class BoardEvaluator {
 			}
 		}
 
-		StringBuffer sb = new StringBuffer();
+//		StringBuffer sb = new StringBuffer();
 		int totalValue = 0;
 		for(Entry<Stone, LineTypeMap> e : stoneMap.entrySet()) {
 			Stone targetStone = e.getKey();
@@ -76,11 +76,11 @@ public class BoardEvaluator {
 			int posNeg = (targetStone == stone) ? 1 : -1;
 			for(Entry<Line, Type> ee : lineTypeMap.entrySet()) {
 				int value = posNeg * typeScoreMap.get(ee.getValue());
-				sb.append(targetStone.str).append(" ").append(ee.getValue()).append(":").append(value).append(";");
+//				sb.append(targetStone.str).append(" ").append(ee.getValue()).append(":").append(value).append(";");
 				totalValue += value;
 			}
 		}
-		gameLogger.logFiner(boardId + "("+ totalValue + "):" + sb.toString());
+//		gameLogger.logFiner(boardId + "("+ totalValue + "):" + sb.toString());
 		return totalValue;
 	}
 

@@ -42,10 +42,6 @@ public class Point {
 		return y;
 	}
 
-	public Point translate(int i, int j) {
-		return Point.get(x + i, y + j);
-	}
-
 	@Override
 	public String toString() {
 		return "[" + x + "," + y + "]";

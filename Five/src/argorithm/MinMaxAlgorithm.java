@@ -27,8 +27,8 @@ public class MinMaxAlgorithm {
 
 	public Cell getBestMove(int depth) {
 		map.clear();
-		MoveAndValue moveAndValue= doGetMinMaxMove(null, depth);
-		printTree(moveAndValue, "(" + moveAndValue.value + ")");
+		MoveAndValue moveAndValue= doGetMinMaxMove(null, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+//		printTree(moveAndValue, "(" + moveAndValue.value + ")");
 		return moveAndValue.cell;
 	}
 
@@ -45,31 +45,27 @@ public class MinMaxAlgorithm {
 		}
 	}
 
-	private MoveAndValue doGetMinMaxMove(Cell lastTryMove, int depth) {
+	private MoveAndValue doGetMinMaxMove(Cell lastTryMove, int depth, int alpha, int beta) {
 		if (lastTryMove != null && boardHelper.checkWin(lastTryMove)) {
-			String boardId = "" + count;
-			int value = evaluator.evaluate(boardId);
 			count++;
-			return new MoveAndValue(lastTryMove, value, boardId);
+			int value = evaluator.evaluate(count);
+			return new MoveAndValue(lastTryMove, value, count);
 		}
 
 		if (depth == 0) {
-			String boardId = "" + count;
-			int value = evaluator.evaluate(boardId);
 			count++;
-			return new MoveAndValue(lastTryMove, value, boardId);
+			int value = evaluator.evaluate(count);
+			return new MoveAndValue(lastTryMove, value, count);
 		}
 
 		List<Cell> cells = boardHelper.getNearAvailable();
 		if (cells.isEmpty()) {
-			String boardId = "" + count;
-			int value = evaluator.evaluate(boardId);
 			count++;
-			return new MoveAndValue(lastTryMove, value, boardId);
+			int value = evaluator.evaluate(count);
+			return new MoveAndValue(lastTryMove, value, count);
 		}
 
 		boolean isMaxNode = isMaxNode(lastTryMove);
-		int minMaxValue = isMaxNode ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		Stone targetStone = isMaxNode ? stone : stone.getOpposite();
 
 		List<MoveAndValue> children = new ArrayList<MoveAndValue>();
@@ -77,31 +73,44 @@ public class MinMaxAlgorithm {
 		for(int i = 0; i < cells.size(); i++) {
 			Cell cell = cells.get(i);
 			boardHelper.tryMove(targetStone, cell);
-			MoveAndValue mav = doGetMinMaxMove(cell, depth - 1);
+			MoveAndValue mav = doGetMinMaxMove(cell, depth - 1, alpha, beta);
 			children.add(mav);
+			boardHelper.rollbackTry();
 			int value = mav.value;
 			if (isMaxNode) {
 				// max
-	 			if (value > minMaxValue) {
-					minMaxValue = value;
+	 			if (value > alpha) {
+	 				alpha = value;
 					minMaxCell = cell;
+					if (alpha >= beta) {
+						break;
+					}
 				}
 			} else {
 				// min
-	 			if (value < minMaxValue) {
-					minMaxValue = value;
+	 			if (value < beta) {
+	 				beta = value;
 					minMaxCell = cell;
+					if (alpha >= beta) {
+						break;
+					}
 				}
 			}
-			boardHelper.rollbackTry();
 		}
 
+		if (isMaxNode) {
+			return createMAV(lastTryMove, minMaxCell, alpha, children);
+		} else {
+			return createMAV(lastTryMove, minMaxCell, beta, children);
+		}
+	}
 
+	private MoveAndValue createMAV(Cell lastTryMove, Cell minMaxCell, int minMaxValue, List<MoveAndValue> children) {
 		Cell cell = lastTryMove;
 		if (lastTryMove == null) {
 			cell = minMaxCell;
 		}
-		MoveAndValue mav = new MoveAndValue(cell, minMaxValue, "");
+		MoveAndValue mav = new MoveAndValue(cell, minMaxValue, 0);
 		map.put(mav, children);
 		return mav;
 	}
@@ -113,9 +122,9 @@ public class MinMaxAlgorithm {
 	private class MoveAndValue {
 		Cell cell;
 		int value;
-		String boardId;
+		int boardId;
 
-		public MoveAndValue(Cell cell, int value, String boardId) {
+		public MoveAndValue(Cell cell, int value, int boardId) {
 			this.cell = cell;
 			this.value = value;
 			this.boardId = boardId;
