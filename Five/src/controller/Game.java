@@ -8,7 +8,9 @@ import model.AIPlayer;
 import model.Board;
 import model.BoardHelper;
 import model.Cell;
+import model.IPlayer;
 import model.Stone;
+import model.User;
 
 public class Game {
 	private Board board;
@@ -19,14 +21,14 @@ public class Game {
 		boardHelper = new BoardHelper(board);
 
 		AIPlayer c1 = new AIPlayer(Stone.BLACK, boardHelper);
-		AIPlayer c2 = new AIPlayer(Stone.WHITE, boardHelper);
-		Map<Stone, AIPlayer> players = new HashMap<Stone, AIPlayer>();
+		User c2 = new User(Stone.WHITE, boardHelper);
+		Map<Stone, IPlayer> players = new HashMap<Stone, IPlayer>();
 		players.put(Stone.BLACK, c1);
 		players.put(Stone.WHITE, c2);
 
 		Stone currentStone = Stone.BLACK;
 		while(true) {
-			AIPlayer player = players.get(currentStone);
+			IPlayer player = players.get(currentStone);
 			Cell cell = player.getMove();
 			if (cell == null) {
 				// game over
@@ -40,7 +42,7 @@ public class Game {
 			}
 
 			boardHelper.move(currentStone, cell);
-			GameLogger.getInstance().logDebug(boardHelper.getBoardStr());
+			GameLogger.getInstance().logInfo(boardHelper.getBoardStr());
 
 			if (boardHelper.checkWin(cell)) {
 				GameLogger.getInstance().logInfo(currentStone + " win!");

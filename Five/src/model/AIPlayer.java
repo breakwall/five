@@ -20,6 +20,6 @@ public class AIPlayer implements IPlayer{
 			return boardHelper.getBoard().get(Board.COLUMN / 2, Board.COLUMN / 2);
 		}
 
-		return algorithm.getBestMove(2);
+		return algorithm.getBestMove(4);
 	}
 }
