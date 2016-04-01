@@ -14,7 +14,7 @@ public class Board {
 	private void initBoard() {
 		for (int i = 0; i < COLUMN; i++) {
 			for (int j = 0 ; j < COLUMN; j++) {
-				model[i][j] = new Cell(Point.get(i, j), this);
+				model[i][j] = new Cell(i, j, this);
 			}
 		}
 	}

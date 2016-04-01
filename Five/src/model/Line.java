@@ -1,15 +1,24 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class Line {
+import controller.Utils;
+
+public class Line implements ICellListener {
 	private List<Cell> cells;
 	private Direction direction;
+	private Map<Stone, String> lineStrMap = new HashMap<Stone, String>();
 
 	public Line(List<Cell> cells, Direction direction) {
 		this.cells = cells;
 		this.direction = direction;
+		updateLineStrMap();
+		for (Cell cell : cells) {
+			cell.addListener(this);
+		}
 	}
 
 	public Line(Cell from, Direction direction) {
@@ -41,11 +50,11 @@ public class Line {
 		return cells.get(index);
 	}
 
-	public Line getSubLine(int fromIndex, int toIndex) {
-		List<Cell> list = cells.subList(fromIndex, toIndex + 1);
-		Line subLine = new Line(list, direction);
-		return subLine;
-	}
+//	public Line getSubLine(int fromIndex, int toIndex) {
+//		List<Cell> list = cells.subList(fromIndex, toIndex + 1);
+//		Line subLine = new Line(list, direction);
+//		return subLine;
+//	}
 
 	public boolean containsCell(Cell cell) {
 		for (Cell p : cells) {
@@ -72,34 +81,29 @@ public class Line {
 	}
 
 	public String getStr(Stone currentFocus) {
-		StringBuffer sb = new StringBuffer();
+		return lineStrMap.get(currentFocus);
+	}
 
-		Cell forwardCell = getForwardCell();
-		if (forwardCell == null
-				|| forwardCell.getStone() == currentFocus.getOpposite()) {
-			sb.append(currentFocus.getOpposite().chr);
+	private void updateLineStrMap() {
+		for(Stone s : Utils.sides) {
+			StringBuffer sb = new StringBuffer();
+			Cell forwardCell = getForwardCell();
+			if (forwardCell == null
+					|| forwardCell.getStone() == s.getOpposite()) {
+				sb.append(s.getOpposite().chr);
+			}
+
+			for (Cell c : cells) {
+				sb.append(c.getStone().chr);
+			}
+
+			Cell backwardCell = getForwardCell();
+			if (backwardCell == null
+					|| backwardCell.getStone() == s.getOpposite()) {
+				sb.append(s.getOpposite().chr);
+			}
+			lineStrMap.put(s, sb.toString());
 		}
-
-		for (Cell c : cells) {
-			sb.append(c.getStone().chr);
-		}
-
-		Cell backwardCell = getForwardCell();
-		if (backwardCell == null
-				|| backwardCell.getStone() == currentFocus.getOpposite()) {
-			sb.append(currentFocus.getOpposite().chr);
-		}
-
-		String s = sb.toString();
-//		s = s.replace(Stone.NONE.str, '0');
-//		if (currentFocus == Stone.BLACK) {
-//			s = s.replace(Stone.BLACK.str,  '1');
-//			s = s.replace(Stone.BLACK.str, '2');
-//		} else {
-//			s = s.replace(Stone.BLACK.str, '2');
-//			s = s.replace(Stone.BLACK.str, '1');
-//		}
-		return s;
 	}
 
 	@Override
@@ -109,40 +113,14 @@ public class Line {
 			sb.append(c.getStone().chr);
 		}
 
-		sb.append(cells.get(0).getPoint());
+		sb.append(cells.get(0).toString());
 		sb.append("->");
-		sb.append(cells.get(cells.size() - 1).getPoint());
+		sb.append(cells.get(cells.size() - 1).toString());
 		return sb.toString();
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((cells == null) ? 0 : cells.hashCode());
-		result = prime * result
-				+ ((direction == null) ? 0 : direction.hashCode());
-		return result;
+	public void cellChanged(Cell cell, Stone oldVal, Stone newVal) {
+		updateLineStrMap();
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Line other = (Line) obj;
-		if (cells == null) {
-			if (other.cells != null)
-				return false;
-		} else if (!cells.equals(other.cells))
-			return false;
-		if (direction != other.direction)
-			return false;
-		return true;
-	}
-
-
 }

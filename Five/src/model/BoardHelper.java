@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,9 +65,12 @@ public class BoardHelper {
 
 	public List<Cell> getNearAvailable() {
 		List<Cell> cells = progress.getCells();
-		Set<Cell> all = new HashSet<Cell>();
-		for (Cell cell : cells) {
-			all.addAll(getNearAvailable(cell));
+		Set<Cell> all = new LinkedHashSet<Cell>();
+//		for (Cell cell : cells) {
+//			all.addAll(getNearAvailable(cell));
+//		}
+		for (int i = cells.size() - 1; i >=0 ; i--) {
+			all.addAll(getNearAvailable(cells.get(i)));
 		}
 		return new ArrayList<Cell>(all);
 	}
@@ -84,7 +86,7 @@ public class BoardHelper {
 	public void move(Stone stone, Cell cell) {
 		cell.setStone(stone);
 		progress.addCell(cell);
-		GameLogger.getInstance().logInfo(progress.size() + "-> stone: " + cell.getStone() + ", point: " + cell.getPoint());
+		GameLogger.getInstance().logInfo(progress.size() + "->" + cell.toString());
 	}
 
 	public void tryMove(Stone stone, Cell cell) {
@@ -112,7 +114,7 @@ public class BoardHelper {
 
 	public String getBoardStr() {
 		StringBuffer sb = new StringBuffer();
-		Point lastCellPoint = progress.getLastCell().getPoint();
+		Cell lastCell = progress.getLastCell();
 		sb.append("\n0 1 2 3 4 5 6 7 8 9 0 1 2 3 4\n");
 		for(int i = 0; i < Board.COLUMN; i++) {
 			for (int j= 0; j< Board.COLUMN; j++) {
@@ -129,7 +131,7 @@ public class BoardHelper {
 					break;
 				}
 				sb.append(str);
-				if (lastCellPoint.getX() == j && lastCellPoint.getY() == i) {
+				if (lastCell.getX() == j && lastCell.getY() == i) {
 					sb.append(".");
 				} else {
 					sb.append(" ");

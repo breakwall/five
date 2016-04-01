@@ -1,54 +1,41 @@
 package model;
 
-public class Cell {
-	private final Point point;
-	private final Board board;
-	private Stone stone = Stone.NONE;
+import java.util.ArrayList;
+import java.util.List;
 
-	public Cell(Point point, Board board) {
-		this.point = point;
+public class Cell {
+	private final Board board;
+	private int x;
+	private int y;
+	private Stone stone = Stone.NONE;
+	private List<ICellListener> listeners = new ArrayList<ICellListener>();
+
+	public Cell(int x, int y, Board board) {
+		this.x = x;
+		this.y = y;
 		this.board = board;
 	}
 
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
 	public void setStone(Stone stone) {
+		Stone old = this.stone;
 		this.stone = stone;
+		fireCellChanged(old, stone);
 	}
 
 	public Stone getStone() {
 		return stone;
 	}
 
-	public Point getPoint() {
-		return point;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((point == null) ? 0 : point.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Cell other = (Cell) obj;
-		if (point == null) {
-			if (other.point != null)
-				return false;
-		} else if (!point.equals(other.point))
-			return false;
-		return true;
-	}
-
 	public Cell getNearbyCell(Direction direction) {
-		return board.get(point.getX() + direction.x, point.getY() + direction.y);
+		return board.get(x + direction.x, y + direction.y);
 	}
 
 	public Board getBoard() {
@@ -57,6 +44,16 @@ public class Cell {
 
 	@Override
 	public String toString() {
-		return stone.chr + " " + point.toString();
+		return stone.chr + "[" + x + "," + y + "]";
+	}
+
+	public void addListener(ICellListener listener) {
+		listeners.add(listener);
+	}
+
+	private void fireCellChanged(Stone oldVal, Stone newVal) {
+		for(ICellListener listener : listeners) {
+			listener.cellChanged(this, oldVal, newVal);
+		}
 	}
 }

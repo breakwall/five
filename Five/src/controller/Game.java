@@ -10,7 +10,6 @@ import model.BoardHelper;
 import model.Cell;
 import model.IPlayer;
 import model.Stone;
-import model.User;
 
 public class Game {
 	private Board board;
@@ -20,8 +19,9 @@ public class Game {
 		board = new Board();
 		boardHelper = new BoardHelper(board);
 
-		AIPlayer c1 = new AIPlayer(Stone.BLACK, boardHelper);
-		User c2 = new User(Stone.WHITE, boardHelper);
+		IPlayer c1 = new AIPlayer(Stone.BLACK, boardHelper);
+//		IPlayer c2 = new User(Stone.WHITE, boardHelper);
+		IPlayer c2 = new AIPlayer(Stone.WHITE, boardHelper);
 		Map<Stone, IPlayer> players = new HashMap<Stone, IPlayer>();
 		players.put(Stone.BLACK, c1);
 		players.put(Stone.WHITE, c2);
@@ -37,16 +37,17 @@ public class Game {
 				break;
 			}
 
-			if (!board.isAvailable(cell.getPoint())) {
-				throw new RuntimeException("not available");
-			}
-
 			boardHelper.move(currentStone, cell);
 			GameLogger.getInstance().logInfo(boardHelper.getBoardStr());
 
 			if (boardHelper.checkWin(cell)) {
 				GameLogger.getInstance().logInfo(currentStone + " win!");
 				return true;
+			}
+
+			if (boardHelper.getProgress().size() == 4) {
+				System.out.println("break;");
+				break;
 			}
 
 			currentStone = currentStone.getOpposite();
@@ -59,6 +60,6 @@ public class Game {
 		long time = System.currentTimeMillis();
 		Game game = new Game();
 		game.start();
-		System.out.println((System.currentTimeMillis() - time) / 1000);
+		System.out.println((System.currentTimeMillis() - time));
 	}
 }

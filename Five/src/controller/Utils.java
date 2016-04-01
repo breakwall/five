@@ -1,7 +1,9 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import model.Board;
@@ -15,15 +17,23 @@ public class Utils {
 
 	public static final Direction[] directions = {Direction.N, Direction.NW, Direction.W, Direction.SW};
 
+	public static final Stone[] sides = new Stone[] { Stone.BLACK, Stone.WHITE };
+
 	public static final Random RANDOM = new Random();
 
+	private static final Map<Cell,List<Line>> linesCache = new HashMap<Cell, List<Line>>();
+
 	public static List<Line> getReferenceLines2(Cell cell) {
-		List<Line> list = new ArrayList<Line>();
-		for (Direction direction : directions) {
-			Line line = getLine(cell, direction);
-			if (line.size() >= 5) {
-				list.add(line);
+		List<Line> list = linesCache.get(cell);
+		if (list == null) {
+			list = new ArrayList<Line>();
+			for (Direction direction : directions) {
+				Line line = getLine(cell, direction);
+				if (line.size() >= 5) {
+					list.add(line);
+				}
 			}
+			linesCache.put(cell, list);
 		}
 
 		return list;
@@ -31,8 +41,8 @@ public class Utils {
 
 	public static Line getLine(Cell cellInLine, Direction direction) {
 		Direction oppo = direction.getOpposite();
-		int x = cellInLine.getPoint().getX();
-		int y = cellInLine.getPoint().getY();
+		int x = cellInLine.getX();
+		int y = cellInLine.getY();
 		if (oppo.x == 0) {
 			y = get(y, oppo.y);
 		} else if (oppo.y == 0){

@@ -4,12 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class User implements IPlayer {
+public class Human implements IPlayer {
 
 	private Stone stone;
 	private BoardHelper boardHelper;
 
-	public User(Stone stone, BoardHelper boardHelper) {
+	public Human(Stone stone, BoardHelper boardHelper) {
 		this.stone = stone;
 		this.boardHelper = boardHelper;
 	}
