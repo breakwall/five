@@ -7,11 +7,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import model.Stone;
-import argorithm.BoardEvaluator.Type;
 
 public class PatternMap {
 	private static final Map<Type, String[]> typePatternMap = new HashMap<Type, String[]>();
+	private static final List<Type> threateningTypes = new ArrayList<Type>();
+	
 	static {
+		threateningTypes.add(Type.HUO4);
+		threateningTypes.add(Type.CHONG4);
+		threateningTypes.add(Type.HUO3);
+		threateningTypes.add(Type.MIAN3);
+		
 		typePatternMap.put(Type.LIAN5, new String[] { "11111" });
 		typePatternMap.put(Type.HUO4, new String[] { "011110" });
 		typePatternMap.put(Type.CHONG4, new String[] { "011112", "211110", "10111", "11101", "11011" });
@@ -24,12 +30,15 @@ public class PatternMap {
 	private static List<String> blackPatterns = new ArrayList<String>();
 	private static List<String> whitePatterns = new ArrayList<String>();
 	private static List<Type> types = new ArrayList<Type>();
+	
+	private static List<String> sBlackPatterns = new ArrayList<String>();
+	private static List<String> sWhitePatterns = new ArrayList<String>();
+	private static List<Type> sTypes = new ArrayList<Type>();
+	
 	static {
 		for(Entry<Type, String[]> e: typePatternMap.entrySet()) {
 			Type type = e.getKey();
 			String[] patterns = e.getValue();
-//			String[] blackPatterns = new String[patterns.length];
-//			String[] whitePatterns = new String[patterns.length];
 			for (int i = 0; i < patterns.length; i++) {
 				String blackPattern;
 				String whitePattern;
@@ -44,6 +53,12 @@ public class PatternMap {
 				blackPatterns.add(blackPattern);
 				whitePatterns.add(whitePattern);
 				types.add(type);
+				
+				if (threateningTypes.contains(type)) {
+					sBlackPatterns.add(blackPattern);
+					sWhitePatterns.add(whitePattern);
+					sTypes.add(type);
+				}
 			}
 		}
 	}
@@ -57,6 +72,18 @@ public class PatternMap {
 	}
 
 	public static List<Type> getTypes() {
+		return types;
+	}
+	
+	public static List<String> getSPatterns(Stone stone) {
+		if (stone == Stone.BLACK) {
+			return sBlackPatterns;
+		} else {
+			return sWhitePatterns;
+		}
+	}
+
+	public static List<Type> getSTypes() {
 		return types;
 	}
 }

@@ -1,6 +1,6 @@
 package model;
 
-import controller.Utils;
+import utils.Utils;
 
 
 public class Board {
@@ -35,9 +35,5 @@ public class Board {
 		}
 
 		return null;
-	}
-
-	public Cell get(Point point) {
-		return get(point.getX(), point.getY());
 	}
 }

@@ -1,16 +1,12 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import controller.Utils;
 
 public class Line implements ICellListener {
 	private List<Cell> cells;
 	private Direction direction;
-	private Map<Stone, String> lineStrMap = new HashMap<Stone, String>();
+	private String lineStr = null;
 
 	public Line(List<Cell> cells, Direction direction) {
 		this.cells = cells;
@@ -19,6 +15,8 @@ public class Line implements ICellListener {
 		for (Cell cell : cells) {
 			cell.addListener(this);
 		}
+		
+		cells.get(0).addReferenceLine(direction, this);
 	}
 
 	public Line(Cell from, Direction direction) {
@@ -42,68 +40,22 @@ public class Line implements ICellListener {
 		return direction;
 	}
 
-	public List<Cell> getCells() {
-		return cells;
-	}
-
 	public Cell getCell(int index) {
 		return cells.get(index);
 	}
 
-//	public Line getSubLine(int fromIndex, int toIndex) {
-//		List<Cell> list = cells.subList(fromIndex, toIndex + 1);
-//		Line subLine = new Line(list, direction);
-//		return subLine;
-//	}
-
-	public boolean containsCell(Cell cell) {
-		for (Cell p : cells) {
-			if(p.equals(cell)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public Cell getForwardCell() {
-		Cell fromCell = cells.get(0);
-		return fromCell.getNearbyCell(direction.getOpposite());
-	}
-
-	public Cell getBackwardCell() {
-		Cell toCell = cells.get(cells.size() - 1);
-		return toCell.getNearbyCell(direction);
-	}
-
-	public int indexOf(Cell cell) {
-		return cells.indexOf(cell);
-	}
-
 	public String getStr(Stone currentFocus) {
-		return lineStrMap.get(currentFocus);
+		char oppo = currentFocus.getOpposite().chr;
+		return oppo + lineStr.toString() + oppo;
 	}
 
 	private void updateLineStrMap() {
-		for(Stone s : Utils.sides) {
-			StringBuffer sb = new StringBuffer();
-			Cell forwardCell = getForwardCell();
-			if (forwardCell == null
-					|| forwardCell.getStone() == s.getOpposite()) {
-				sb.append(s.getOpposite().chr);
-			}
-
-			for (Cell c : cells) {
-				sb.append(c.getStone().chr);
-			}
-
-			Cell backwardCell = getForwardCell();
-			if (backwardCell == null
-					|| backwardCell.getStone() == s.getOpposite()) {
-				sb.append(s.getOpposite().chr);
-			}
-			lineStrMap.put(s, sb.toString());
+		StringBuffer sb = new StringBuffer();
+		for (Cell c : cells) {
+			sb.append(c.getStone().chr);
 		}
+		
+		lineStr = sb.toString();
 	}
 
 	@Override
@@ -121,6 +73,7 @@ public class Line implements ICellListener {
 
 	@Override
 	public void cellChanged(Cell cell, Stone oldVal, Stone newVal) {
-		updateLineStrMap();
+		int i = cells.indexOf(cell);
+		lineStr = lineStr.substring(0, i) + newVal.chr + lineStr.substring(i + 1);
 	}
 }

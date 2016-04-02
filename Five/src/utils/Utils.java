@@ -1,4 +1,4 @@
-package controller;
+package utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,10 +54,14 @@ public class Utils {
 				y = y + oppo.y;
 			}
 		}
-
+		
 		Board board = cellInLine.getBoard();
-		Line line = new Line(board.get(x, y), direction);
-		return line;
+		Cell fromCell = board.get(x, y);
+		Line line = fromCell.getReferenceLine(direction);
+		if (line != null) {
+			return line;
+		}
+		return new Line(board.get(x, y), direction);
 	}
 
 	private static int get(int y, int y2) {
@@ -66,88 +70,6 @@ public class Utils {
 		} else {
 			return 0;
 		}
-	}
-
-	public static List<Cell> getLineCells(Cell cellInLine, Direction direction, boolean fullLine) {
-		Cell startCell = cellInLine;
-		Direction oppo = direction.getOpposite();
-
-		int maxlineSize = 21;
-		if (fullLine == false) {
-			maxlineSize = 9;
-		}
-		int maxHalfSize = maxlineSize / 2;
-
-		for (int i = 0; i < maxHalfSize; i++) {
-			Cell c = startCell.getNearbyCell(oppo);
-			if (c == null) {
-				break;
-			}
-			startCell = c;
-		}
-
-		List<Cell> cells = new ArrayList<Cell>();
-		Cell cell = startCell;
-		for (int i = 0; i < maxlineSize; i++) {
-			cells.add(cell);
-			cell = cell.getNearbyCell(direction);
-			if (cell == null) {
-				break;
-			}
-		}
-
-		return cells;
-	}
-
-	public static List<Line> getReferenceLines(Cell cell, boolean fullLine) {
-		List<Line> list = new ArrayList<Line>();
-		for (Direction direction : directions) {
-			List<Cell> cells = getLineCells(cell, direction, fullLine);
-			if (cells.size() >= 5) {
-				Line line = new Line(cells, direction);
-				list.add(line);
-			}
-		}
-
-		return list;
-	}
-
-	public static int getWeightOfCell(Cell cell, Stone targetStone) {
-		int weight = 0;
-		for (Direction direction : directions) {
-			int numberOfCell = getNumberOfNearbyCell(cell, direction, targetStone);
-			weight = weight + (int)Math.pow(10, numberOfCell);
-		}
-
-		return weight;
-	}
-
-	private static int getNumberOfNearbyCell(Cell cell, Direction direction, Stone targetStone) {
-		int numberOfNearbyCell = 0;
-		int cellCapbility = 1;
-		for (Direction d : new Direction[] {direction, direction.getOpposite()}) {
-			boolean isNearby = true;
-			Cell nearby = cell.getNearbyCell(d);
-			while(nearby != null) {
-				if (isNearby && nearby.getStone() == targetStone) {
-					numberOfNearbyCell ++;
-				} else {
-					isNearby = false;
-				}
-
-				if (nearby.getStone() == targetStone.getOpposite()) {
-					break;
-				}
-				cellCapbility ++;
-				nearby = nearby.getNearbyCell(d);
-			}
-		}
-
-		if (cellCapbility >= 5) {
-			return numberOfNearbyCell;
-		}
-
-		return 0;
 	}
 
 	public static boolean isInBoardRange(int i) {

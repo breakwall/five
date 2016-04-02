@@ -1,6 +1,6 @@
 package argorithm;
 
-import java.util.List;
+import java.util.Set;
 
 import logger.GameLogger;
 import model.BoardHelper;
@@ -14,7 +14,7 @@ public class MinMaxAlgorithm {
 	private final Stone stone;
 	private final GameLogger logger = GameLogger.getInstance();
 //	private final Map<MoveAndValue, List<MoveAndValue>> map = new HashMap<MoveAndValue, List<MoveAndValue>>();
-	private static int evaluationCount = 0;
+	public static int evaluationCount = 0;
 	private MoveAndValue moveAndValue = new MoveAndValue();
 
 	public MinMaxAlgorithm(Stone stone, BoardHelper boardHelper) {
@@ -61,7 +61,7 @@ public class MinMaxAlgorithm {
 			return moveAndValue.get(lastTryMove, value, evaluationCount);
 		}
 
-		List<Cell> cells = boardHelper.getNearAvailable();
+		Set<Cell> cells = getCandidateCells();
 		if (cells.isEmpty()) {
 			evaluationCount++;
 			int value = evaluator.evaluate(evaluationCount);
@@ -71,41 +71,36 @@ public class MinMaxAlgorithm {
 		Stone targetStone = isMax ? stone : stone.getOpposite();
 
 		Cell minMaxCell = null;
-		if (isMax) {
-			for(int i = 0; i < cells.size(); i++) {
-				Cell cell = cells.get(i);
-				boardHelper.tryMove(targetStone, cell);
-				MoveAndValue mav = doGetMinMaxMove(cell, depth - 1, alpha, beta, !isMax);
-				boardHelper.rollbackTry();
-				int value = mav.value;
+		for (Cell cell : cells) {
+			boardHelper.tryMove(targetStone, cell);
+			MoveAndValue mav = doGetMinMaxMove(cell, depth - 1, alpha, beta,
+					!isMax);
+			boardHelper.rollbackTry();
+			int value = mav.value;
+			if (isMax) {
 				// max
-	 			if (value > alpha) {
-	 				alpha = value;
+				if (value > alpha) {
+					alpha = value;
+					minMaxCell = cell;
+					if (alpha >= beta) {
+						break;
+					}
+				}
+			} else {
+				// min
+				if (value < beta) {
+					beta = value;
 					minMaxCell = cell;
 					if (alpha >= beta) {
 						break;
 					}
 				}
 			}
+		}
 
+		if (isMax) {
 			return createMAV(lastTryMove, minMaxCell, alpha);
 		} else {
-			for(int i = 0; i < cells.size(); i++) {
-				Cell cell = cells.get(i);
-				boardHelper.tryMove(targetStone, cell);
-				MoveAndValue mav = doGetMinMaxMove(cell, depth - 1, alpha, beta, !isMax);
-				boardHelper.rollbackTry();
-				int value = mav.value;
-				// min
-	 			if (value < beta) {
-	 				beta = value;
-					minMaxCell = cell;
-					if (alpha >= beta) {
-						break;
-					}
-				}
-			}
-
 			return createMAV(lastTryMove, minMaxCell, beta);
 		}
 	}
@@ -119,9 +114,13 @@ public class MinMaxAlgorithm {
 //		map.put(mav, children);
 		return mav;
 	}
-
-	private boolean isMaxNode(Cell lastMove) {
-		return lastMove == null || lastMove.getStone() == stone.getOpposite();
+	
+	private Set<Cell> getCandidateCells() {
+		Set<Cell> cells = evaluator.getThreateningCells();
+		if (cells.isEmpty()) {
+			return boardHelper.getNearAvailable();
+		}
+		return cells;
 	}
 
 	private class MoveAndValue {

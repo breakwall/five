@@ -1,7 +1,11 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import utils.GameConstants;
 
 public class Cell {
 	private final Board board;
@@ -9,6 +13,8 @@ public class Cell {
 	private int y;
 	private Stone stone = Stone.NONE;
 	private List<ICellListener> listeners = new ArrayList<ICellListener>();
+	private List<Cell> nearByCells;
+	private Map<Direction, Line> referenceLines = new HashMap<Direction, Line>();
 
 	public Cell(int x, int y, Board board) {
 		this.x = x;
@@ -37,6 +43,22 @@ public class Cell {
 	public Cell getNearbyCell(Direction direction) {
 		return board.get(x + direction.x, y + direction.y);
 	}
+	
+	public List<Cell> getNearbyCells() {
+		if (nearByCells == null) {
+			nearByCells = new ArrayList<Cell>();
+			for (Direction d : Direction.values()) {
+				for(int i = 1; i <= GameConstants.distance; i++) {
+					Cell cell = board.get(x + d.x * i, y + d.y * i);
+					if (cell != null) {
+						nearByCells.add(cell);
+					}
+				}
+			}
+		}
+		
+		return nearByCells;
+	}
 
 	public Board getBoard() {
 		return board;
@@ -55,5 +77,14 @@ public class Cell {
 		for(ICellListener listener : listeners) {
 			listener.cellChanged(this, oldVal, newVal);
 		}
+	}
+	
+	public void addReferenceLine(Direction direction, Line line) {
+		referenceLines.put(direction, line);
+	}
+	
+	
+	public Line getReferenceLine(Direction direction) {
+		return referenceLines.get(direction);
 	}
 }
