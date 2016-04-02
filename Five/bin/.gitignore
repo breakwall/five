@@ -1,7 +1,2 @@
-/logger
-/argorithm
-/model
-/controller
-/BTreePrinter.class
-/BTreePrinterTest.class
-/Node.class
+*
+!.gitignore
