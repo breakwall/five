@@ -12,11 +12,6 @@ public class Line implements ICellListener {
 		this.cells = cells;
 		this.direction = direction;
 		updateLineStrMap();
-		for (Cell cell : cells) {
-			cell.addListener(this);
-		}
-		
-		cells.get(0).addReferenceLine(direction, this);
 	}
 
 	public Line(Cell from, Direction direction) {

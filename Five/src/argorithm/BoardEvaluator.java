@@ -6,91 +6,80 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import model.BoardHelper;
 import model.Cell;
+import model.ICellListener;
 import model.Line;
 import model.Stone;
 import utils.Utils;
 
-public class BoardEvaluator {
+public class BoardEvaluator implements ICellListener {
 
 	private BoardHelper boardHelper;
 	private Stone stone;
 	private Set<Line> visitedLines = new HashSet<Line>();
+	private Map<Line, Integer> lineValueMap = new HashMap<Line, Integer>();
+	private List<Cell> dirtyCells = new ArrayList<Cell>();
+	
+	
 	public static int count = 0;
-
-	private Map<Stone, List<Type>> stoneMap = new HashMap<Stone, List<Type>>();
 
 	public BoardEvaluator(Stone stone, BoardHelper boardHelper) {
 		this.boardHelper = boardHelper;
 		this.stone = stone;
-		stoneMap.put(stone, new ArrayList<Type>());
-		stoneMap.put(stone.getOpposite(), new ArrayList<Type>());
+		boardHelper.getBoard().addListener(this);
 	}
 
 	public int evaluate(int boardId) {
-		
-		List<Type> lineTypeList = stoneMap.get(stone);
-		List<Type> lineTypeList2 = stoneMap.get(stone.getOpposite());
 		visitedLines.clear();
-		lineTypeList.clear();
-		lineTypeList2.clear();
-
-		for (Cell cell : boardHelper.getProgress().getCells()) {
-			List<Line> lines = Utils.getReferenceLines2(cell);
+		for (Cell cell : dirtyCells) {
+			List<Line> lines = boardHelper.getBoard().getReferenceLines(cell);
 			for (Line line : lines) {
 				if (visitedLines.contains(line)) {
 					continue;
 				}
 
-				visitorLine(line, stone, lineTypeList);
-				visitorLine(line, stone.getOpposite(), lineTypeList2);
-
+				
+				int lineValue = visitorLine(line);
+				lineValueMap.put(line, lineValue);
 				visitedLines.add(line);
 			}
 		}
 		int totalValue = 0;
-
-		return calcValue(totalValue);
-	}
-
-	private int calcValue(int totalValue) {
-		for(Entry<Stone, List<Type>> e : stoneMap.entrySet()) {
-			Stone targetStone = e.getKey();
-			List<Type> map = e.getValue();
-			int posNeg = (targetStone == stone) ? 1 : -1;
-			for(Type ee : map) {
-				int value = posNeg * ee.score;
-				totalValue += value;
-			}
+		for (int i : lineValueMap.values()) {
+			totalValue += i;
 		}
+		dirtyCells.clear();
 		return totalValue;
 	}
-	
-	
 
-	private void visitorLine(Line line, Stone targetStone, List<Type> lineTypeList) {
-		String lineStr = line.getStr(targetStone);
-		List<String> patterns = PatternMap.getPatterns(targetStone);
-		List<Type> types = PatternMap.getTypes();
-		boolean isMatchHuo3 = false;
-		for (int i = 0; i < patterns.size(); i++) {
-			if (lineStr.indexOf(patterns.get(i)) == -1) {
-				continue;
-			}
-
-			if (types.get(i) == Type.HUO3) {
-				if (isMatchHuo3) {
+	private int visitorLine(Line line) {
+		int lineValue = 0;
+		for(Stone targetStone : Utils.sides) {
+			int posNeg = (stone == targetStone) ? 1 : -1;
+			String lineStr = line.getStr(targetStone);
+			List<String> patterns = PatternMap.getPatterns(targetStone);
+			List<Type> types = PatternMap.getTypes();
+			boolean isMatchHuo3 = false;
+			for (int i = 0; i < patterns.size(); i++) {
+				if (lineStr.indexOf(patterns.get(i)) == -1) {
 					continue;
-				} else {
-					isMatchHuo3 = true;
 				}
+
+				if (types.get(i) == Type.HUO3) {
+					if (isMatchHuo3) {
+						continue;
+					} else {
+						isMatchHuo3 = true;
+					}
+				}
+				lineValue = lineValue + posNeg * types.get(i).score;
 			}
-			lineTypeList.add(types.get(i));
 		}
+		
+		return lineValue;
 	}
 	
 	public Set<Cell> getThreateningCells() {
@@ -116,7 +105,7 @@ public class BoardEvaluator {
 	
 	private Set<Line> getLines() {
 		for (Cell cell : boardHelper.getProgress().getCells()) {
-			List<Line> lines = Utils.getReferenceLines2(cell);
+			List<Line> lines = boardHelper.getBoard().getReferenceLines(cell);
 			for (Line line : lines) {
 				visitedLines.add(line);
 			}
@@ -139,5 +128,10 @@ public class BoardEvaluator {
 			}
 		}
 		return cells;
+	}
+
+	@Override
+	public void cellChanged(Cell cell, Stone oldVal, Stone newVal) {
+		dirtyCells.add(cell);
 	}
 }

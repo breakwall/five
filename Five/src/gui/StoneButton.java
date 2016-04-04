@@ -65,7 +65,7 @@ public class StoneButton extends JButton {
 		default:
 			return;
 		}
-		RoundRectangle2D e = new RoundRectangle2D.Float((width - radius) / 2, (height - radius) / 2, radius, radius, 8, 8);
+		Ellipse2D e = new Ellipse2D.Float((width - radius) / 2, (height - radius) / 2, radius, radius);
 		if (stone == Stone.BLACK) {
 			g2.fill(e);
 		} else {

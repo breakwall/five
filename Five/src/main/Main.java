@@ -10,7 +10,6 @@ import model.AIPlayer;
 import model.Board;
 import model.BoardHelper;
 import model.Cell;
-import model.Human;
 import model.IPlayer;
 import model.Stone;
 import argorithm.MinMaxAlgorithm;

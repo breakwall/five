@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,6 @@ public class Cell {
 	private int x;
 	private int y;
 	private Stone stone = Stone.NONE;
-	private List<ICellListener> listeners = new ArrayList<ICellListener>();
 	private List<Cell> nearByCells;
 	private Map<Direction, Line> referenceLines = new HashMap<Direction, Line>();
 
@@ -33,7 +33,7 @@ public class Cell {
 	public void setStone(Stone stone) {
 		Stone old = this.stone;
 		this.stone = stone;
-		fireCellChanged(old, stone);
+		board.fireCellChanged(this, old, stone);
 	}
 
 	public Stone getStone() {
@@ -69,17 +69,10 @@ public class Cell {
 		return stone.chr + "[" + x + "," + y + "]";
 	}
 
-	public void addListener(ICellListener listener) {
-		listeners.add(listener);
-	}
-
-	private void fireCellChanged(Stone oldVal, Stone newVal) {
-		for(ICellListener listener : listeners) {
-			listener.cellChanged(this, oldVal, newVal);
-		}
-	}
-	
 	public void addReferenceLine(Direction direction, Line line) {
+		if (referenceLines == null) {
+			referenceLines = new HashMap<Direction, Line>();
+		}
 		referenceLines.put(direction, line);
 	}
 	

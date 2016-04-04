@@ -5,8 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import utils.Utils;
-
 import logger.GameLogger;
 
 public class BoardHelper {
@@ -19,7 +17,7 @@ public class BoardHelper {
 	}
 
 	public boolean checkWin(Cell cell) {
-		List<Line> lines = Utils.getReferenceLines2(cell);
+		List<Line> lines = board.getReferenceLines(cell);
 		for (Line line : lines) {
 			if (containsRow(cell.getStone(), line)) {
 				return true;
@@ -44,25 +42,6 @@ public class BoardHelper {
 		}
 		return false;
 	}
-
-//	public List<Cell> getNearAvailable(Cell cell) {
-//		Set<Cell> set = new LinkedHashSet<Cell>();
-//		Direction[] directions = Utils.directions;
-//		for (Direction direction : directions) {
-//			Cell c = cell.getNearbyCell(direction);
-//			if (c != null && c.getStone() == Stone.NONE) {
-//				set.add(c);
-//			}
-//
-//			Direction oppo = direction.getOpposite();
-//			c = cell.getNearbyCell(oppo);
-//			if (c != null && c.getStone() == Stone.NONE) {
-//				set.add(c);
-//			}
-//		}
-//
-//		return set;
-//	}
 
 	public Set<Cell> getNearAvailable() {
 		List<Cell> cells = progress.getCells();
