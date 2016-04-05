@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +11,10 @@ import utils.Utils;
 public class Board {
 	public static final int COLUMN = 15;
 	private Cell[][] model = new Cell[COLUMN][COLUMN];
-	
+
 	private static final Map<Cell,List<Line>> linesCache = new HashMap<Cell, List<Line>>();
 	private List<ICellListener> listeners = new ArrayList<ICellListener>();
-	
+
 	public Board() {
 		initBoard();
 	}
@@ -27,7 +26,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	public void addListener(ICellListener listener) {
 		listeners.add(listener);
 	}
@@ -49,18 +48,18 @@ public class Board {
 
 		return null;
 	}
-	
-	public void fireCellChanged(Cell cell, Stone oldVal, Stone newVal) {
+
+	public void fireCellChanged(Cell cell, Stone side) {
 		List<Line> list = getReferenceLines(cell);
 		for (Line line : list) {
-			line.cellChanged(cell, oldVal, newVal);
+			line.cellChanged(cell, side);
 		}
-		
+
 		for (int i = 0; i < listeners.size(); i++) {
-			listeners.get(i).cellChanged(cell, oldVal, newVal);
+			listeners.get(i).cellChanged(cell, side);
 		}
 	}
-	
+
 	public List<Line> getReferenceLines(Cell cell) {
 		List<Line> list = linesCache.get(cell);
 		if (list == null) {
@@ -75,7 +74,7 @@ public class Board {
 
 		return list;
 	}
-	
+
 	public Line getLine(Cell cellInLine, Direction direction) {
 		Direction oppo = direction.getOpposite();
 		int x = cellInLine.getX();
@@ -94,7 +93,7 @@ public class Board {
 				y = y + oppo.y;
 			}
 		}
-		
+
 		Board board = cellInLine.getBoard();
 		Cell fromCell = board.get(x, y);
 		Line line = fromCell.getReferenceLine(direction);
@@ -102,10 +101,10 @@ public class Board {
 			line = new Line(fromCell, direction);
 			fromCell.addReferenceLine(direction, line);
 		}
-		
+
 		return line;
 	}
-	
+
 	private int getXY(int y, int y2) {
 		if (y2 == 1) {
 			return Board.COLUMN - 1;

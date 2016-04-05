@@ -13,7 +13,6 @@ public class MinMaxAlgorithm {
 	private final BoardHelper boardHelper;
 	private final Stone stone;
 	private final GameLogger logger = GameLogger.getInstance();
-//	private final Map<MoveAndValue, List<MoveAndValue>> map = new HashMap<MoveAndValue, List<MoveAndValue>>();
 	public static int evaluationCount = 0;
 	private MoveAndValue moveAndValue = new MoveAndValue();
 
@@ -24,29 +23,12 @@ public class MinMaxAlgorithm {
 	}
 
 	public Cell getBestMove(int depth) {
-//		map.clear();
 		int thisCount = evaluationCount;
 		MoveAndValue moveAndValue= doGetMinMaxMove(null, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
 		thisCount = evaluationCount - thisCount;
 		logger.logInfo("evaluation count: " + thisCount + "/" + evaluationCount);
-//		printTree(moveAndValue, "(" + moveAndValue.value + ")");
 		return moveAndValue.cell;
 	}
-
-//	private void printTree(MoveAndValue parent, String s) {
-//		List<MoveAndValue> list = map.get(parent);
-//
-//		if (list == null || list.size() == 0) {
-//			logger.logDebug(s);
-//			return;
-//		}
-//
-//		for(MoveAndValue mav : list) {
-//			if (mav.value == parent.value) {
-//				printTree(mav, s + "->" + mav.toString());
-//			}
-//		}
-//	}
 
 	private MoveAndValue doGetMinMaxMove(Cell lastTryMove, int depth, int alpha, int beta, boolean isMax) {
 		if (lastTryMove != null && boardHelper.checkWin(lastTryMove)) {
@@ -72,10 +54,10 @@ public class MinMaxAlgorithm {
 
 		Cell minMaxCell = null;
 		for (Cell cell : cells) {
-			boardHelper.tryMove(targetStone, cell);
+			boardHelper.tryMove(targetStone, cell, stone);
 			MoveAndValue mav = doGetMinMaxMove(cell, depth - 1, alpha, beta,
 					!isMax);
-			boardHelper.rollbackTry();
+			boardHelper.rollbackTry(stone);
 			int value = mav.value;
 			if (isMax) {
 				// max
@@ -99,22 +81,17 @@ public class MinMaxAlgorithm {
 		}
 
 		if (isMax) {
-			return createMAV(lastTryMove, minMaxCell, alpha);
+			return createMAV(minMaxCell, alpha);
 		} else {
-			return createMAV(lastTryMove, minMaxCell, beta);
+			return createMAV(minMaxCell, beta);
 		}
 	}
 
-	private MoveAndValue createMAV(Cell lastTryMove, Cell minMaxCell, int minMaxValue) {
-		Cell cell = lastTryMove;
-		if (lastTryMove == null) {
-			cell = minMaxCell;
-		}
-		MoveAndValue mav = moveAndValue.get(cell, minMaxValue, 0);
-//		map.put(mav, children);
+	private MoveAndValue createMAV(Cell minMaxCell, int minMaxValue) {
+		MoveAndValue mav = moveAndValue.get(minMaxCell, minMaxValue, 0);
 		return mav;
 	}
-	
+
 	private Set<Cell> getCandidateCells() {
 		Set<Cell> cells = evaluator.getThreateningCells();
 		if (cells.isEmpty()) {

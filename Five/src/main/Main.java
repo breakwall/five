@@ -5,6 +5,8 @@ import gui.GameFrame;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.SwingUtilities;
+
 import logger.GameLogger;
 import model.AIPlayer;
 import model.Board;
@@ -22,22 +24,22 @@ public class Main {
 		Board board = new Board();
 		BoardHelper boardHelper = new BoardHelper(board);
 		Object lock = new Object();
-		GameFrame gameFrame = new GameFrame(boardHelper, lock);
+		final GameFrame gameFrame = new GameFrame(boardHelper, lock);
 
 		//init players
 		Map<Stone, IPlayer> players = new HashMap<Stone, IPlayer>();
 		IPlayer c1 = new AIPlayer(Stone.WHITE, boardHelper);
 		players.put(Stone.WHITE, c1);
-		
+
 //		IPlayer c2 = new Human(Stone.BLACK, gameFrame, lock);
 		IPlayer c2 = new AIPlayer(Stone.BLACK, boardHelper);
 		players.put(Stone.BLACK, c2);
-		
+
 		//loop, black first
 		Stone currentStone = Stone.BLACK;
 		while(true) {
 			IPlayer player = players.get(currentStone);
-			Cell cell = player.getMove();
+			final Cell cell = player.getMove();
 			if (cell == null) {
 				// game over
 				GameLogger.getInstance().logInfo(currentStone + " give up!");
@@ -53,7 +55,13 @@ public class Main {
 			}
 
 			if (boardHelper.checkWin(cell)) {
-				gameFrame.popWin(cell);
+				SwingUtilities.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+						gameFrame.popWin(cell);
+					}
+				});
 				GameLogger.getInstance().logInfo(currentStone + " win!");
 				break;
 			}
@@ -67,10 +75,10 @@ public class Main {
 
 			currentStone = currentStone.getOpposite();
 		}
-		
+
 		double time = AIPlayer.totalTime / 1000.0;
 		logger.logInfo("total time:" + time + "s");
-		logger.logInfo((int)MinMaxAlgorithm.evaluationCount / time + "  count/s");
+		logger.logInfo(MinMaxAlgorithm.evaluationCount / time + "  count/s");
 	}
 
 	public static void main(String[] args) {

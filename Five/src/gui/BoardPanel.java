@@ -22,7 +22,6 @@ public class BoardPanel extends JPanel {
 
 	private BoardHelper boardHelper;
 	private Map<StoneButton, Cell> cellButtonMap = new HashMap<StoneButton, Cell>();
-	private Object lock;
 
 	public BoardPanel(BoardHelper boardHelper, ActionListener listener) {
 		this.boardHelper = boardHelper;

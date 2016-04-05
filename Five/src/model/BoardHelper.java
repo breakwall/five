@@ -1,6 +1,5 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,13 +64,13 @@ public class BoardHelper {
 	}
 
 	public void move(Stone stone, Cell cell) {
-		cell.setStone(stone);
+		cell.setStone(stone, Stone.NONE);
 		progress.addCell(cell);
 		GameLogger.getInstance().logInfo(progress.size() + "->" + cell.toString());
 	}
 
-	public void tryMove(Stone stone, Cell cell) {
-		cell.setStone(stone);
+	public void tryMove(Stone stone, Cell cell, Stone side) {
+		cell.setStone(stone, side);
 		progress.addCell(cell);
 		tryMoveTimes++;
 	}
@@ -79,12 +78,12 @@ public class BoardHelper {
 	/**
 	 * clean the try moves
 	 */
-	public void rollbackTry() {
+	public void rollbackTry(Stone side) {
 		if (tryMoveTimes == 0) {
 			return;
 		}
 		Cell cell = progress.getLastCell();
-		cell.setStone(Stone.NONE);
+		cell.setStone(Stone.NONE, side);
 		progress.rollback();
 		tryMoveTimes--;
 	}
@@ -123,4 +122,6 @@ public class BoardHelper {
 
 		return sb.toString();
 	}
+
+
 }

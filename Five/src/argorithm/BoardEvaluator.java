@@ -22,8 +22,7 @@ public class BoardEvaluator implements ICellListener {
 	private Set<Line> visitedLines = new HashSet<Line>();
 	private Map<Line, Integer> lineValueMap = new HashMap<Line, Integer>();
 	private List<Cell> dirtyCells = new ArrayList<Cell>();
-	
-	
+
 	public static int count = 0;
 
 	public BoardEvaluator(Stone stone, BoardHelper boardHelper) {
@@ -41,7 +40,7 @@ public class BoardEvaluator implements ICellListener {
 					continue;
 				}
 
-				
+
 				int lineValue = visitorLine(line);
 				lineValueMap.put(line, lineValue);
 				visitedLines.add(line);
@@ -78,10 +77,10 @@ public class BoardEvaluator implements ICellListener {
 				lineValue = lineValue + posNeg * types.get(i).score;
 			}
 		}
-		
+
 		return lineValue;
 	}
-	
+
 	public Set<Cell> getThreateningCells() {
 		visitedLines.clear();
 		Set<Cell> threateningCells = new LinkedHashSet<Cell>();
@@ -99,10 +98,10 @@ public class BoardEvaluator implements ICellListener {
 				}
 			}
 		}
-		
+
 		return threateningCells;
 	}
-	
+
 	private Set<Line> getLines() {
 		for (Cell cell : boardHelper.getProgress().getCells()) {
 			List<Line> lines = boardHelper.getBoard().getReferenceLines(cell);
@@ -112,14 +111,14 @@ public class BoardEvaluator implements ICellListener {
 		}
 		return visitedLines;
 	}
-	
+
 	private List<Cell> getAvailableCells(Line line, Stone targetStone, String pattern) {
 		String lineStr = line.getStr(targetStone);
 		int index = lineStr.indexOf(pattern);
 		if (index == -1) {
 			return null;
 		}
-		
+
 		List<Cell> cells = new ArrayList<Cell>();
 		char blankChar = Stone.NONE.chr;
 		for (int i = 0; i < pattern.length(); i++) {
@@ -131,7 +130,9 @@ public class BoardEvaluator implements ICellListener {
 	}
 
 	@Override
-	public void cellChanged(Cell cell, Stone oldVal, Stone newVal) {
-		dirtyCells.add(cell);
+	public void cellChanged(Cell cell, Stone side) {
+		if (side == Stone.NONE || side == stone) {
+			dirtyCells.add(cell);
+		}
 	}
 }

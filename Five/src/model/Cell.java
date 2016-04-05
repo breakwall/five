@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +29,9 @@ public class Cell {
 		return y;
 	}
 
-	public void setStone(Stone stone) {
-		Stone old = this.stone;
+	public void setStone(Stone stone, Stone side) {
 		this.stone = stone;
-		board.fireCellChanged(this, old, stone);
+		board.fireCellChanged(this, side);
 	}
 
 	public Stone getStone() {
@@ -43,7 +41,7 @@ public class Cell {
 	public Cell getNearbyCell(Direction direction) {
 		return board.get(x + direction.x, y + direction.y);
 	}
-	
+
 	public List<Cell> getNearbyCells() {
 		if (nearByCells == null) {
 			nearByCells = new ArrayList<Cell>();
@@ -56,7 +54,7 @@ public class Cell {
 				}
 			}
 		}
-		
+
 		return nearByCells;
 	}
 
@@ -75,8 +73,8 @@ public class Cell {
 		}
 		referenceLines.put(direction, line);
 	}
-	
-	
+
+
 	public Line getReferenceLine(Direction direction) {
 		return referenceLines.get(direction);
 	}

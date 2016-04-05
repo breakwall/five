@@ -49,7 +49,7 @@ public class Line implements ICellListener {
 		for (Cell c : cells) {
 			sb.append(c.getStone().chr);
 		}
-		
+
 		lineStr = sb.toString();
 	}
 
@@ -67,8 +67,8 @@ public class Line implements ICellListener {
 	}
 
 	@Override
-	public void cellChanged(Cell cell, Stone oldVal, Stone newVal) {
+	public void cellChanged(Cell cell, Stone side) {
 		int i = cells.indexOf(cell);
-		lineStr = lineStr.substring(0, i) + newVal.chr + lineStr.substring(i + 1);
+		lineStr = lineStr.substring(0, i) + cell.getStone().chr + lineStr.substring(i + 1);
 	}
 }

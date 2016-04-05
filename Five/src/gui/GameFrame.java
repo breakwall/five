@@ -12,15 +12,15 @@ import model.Cell;
 
 public class GameFrame extends JFrame implements ActionListener {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4113990757408217780L;
-	
+
 	private BoardPanel panel;
 	private Cell userSelected = null;
 	private Object lock;
 	private BoardHelper boardHelper;
-	
+
 	public GameFrame(BoardHelper boardHelper, Object lock) {
 		this.lock = lock;
 		this.boardHelper = boardHelper;
@@ -33,8 +33,8 @@ public class GameFrame extends JFrame implements ActionListener {
 		this.setResizable(false);
 		this.setVisible(true);
 	}
-	
-	
+
+
 	public Cell getUserSelected() {
 		return userSelected;
 	}
