@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import logger.GameLogger;
-import controller.Utils;
 
 public class BoardHelper {
 	private Board board;
@@ -18,7 +17,7 @@ public class BoardHelper {
 	}
 
 	public boolean checkWin(Cell cell) {
-		List<Line> lines = Utils.getReferenceLines2(cell);
+		List<Line> lines = board.getReferenceLines(cell);
 		for (Line line : lines) {
 			if (containsRow(cell.getStone(), line)) {
 				return true;
@@ -44,35 +43,17 @@ public class BoardHelper {
 		return false;
 	}
 
-	public Set<Cell> getNearAvailable(Cell cell) {
-		Set<Cell> set = new LinkedHashSet<Cell>();
-		Direction[] directions = Utils.directions;
-		for (Direction direction : directions) {
-			Cell c = cell.getNearbyCell(direction);
-			if (c != null && c.getStone() == Stone.NONE) {
-				set.add(c);
-			}
-
-			Direction oppo = direction.getOpposite();
-			c = cell.getNearbyCell(oppo);
-			if (c != null && c.getStone() == Stone.NONE) {
-				set.add(c);
-			}
-		}
-
-		return set;
-	}
-
-	public List<Cell> getNearAvailable() {
+	public Set<Cell> getNearAvailable() {
 		List<Cell> cells = progress.getCells();
 		Set<Cell> all = new LinkedHashSet<Cell>();
-//		for (Cell cell : cells) {
-//			all.addAll(getNearAvailable(cell));
-//		}
 		for (int i = cells.size() - 1; i >=0 ; i--) {
-			all.addAll(getNearAvailable(cells.get(i)));
+			for (Cell cell : cells.get(i).getNearbyCells()) {
+				if (cell.getStone() == Stone.NONE) {
+					all.add(cell);
+				}
+			}
 		}
-		return new ArrayList<Cell>(all);
+		return all;
 	}
 
 	public Progress getProgress() {

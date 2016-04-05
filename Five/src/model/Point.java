@@ -3,7 +3,8 @@ package model;
 import java.util.HashMap;
 import java.util.Map;
 
-import controller.Utils;
+import utils.Utils;
+
 
 public class Point {
 
