@@ -6,9 +6,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import model.BoardHelper;
 import model.Cell;
+import utils.GameConstants;
 
 public class GameFrame extends JFrame implements ActionListener {
 	/**
@@ -19,12 +21,10 @@ public class GameFrame extends JFrame implements ActionListener {
 	private BoardPanel panel;
 	private Cell userSelected = null;
 	private Object lock;
-	private BoardHelper boardHelper;
 
 	public GameFrame(BoardHelper boardHelper, Object lock) {
 		this.lock = lock;
-		this.boardHelper = boardHelper;
-		this.setTitle("gobang");
+		this.setTitle("GoBang");
 		panel = new BoardPanel(boardHelper, this);
 		add(panel);
 		this.pack();
@@ -50,12 +50,20 @@ public class GameFrame extends JFrame implements ActionListener {
 
 
 	public void refresh() {
-		panel.refresh();
+		if (GameConstants.START_UI) {
+			panel.refresh();
+		}
 	}
 
 
-	public void popWin(Cell cell) {
-		JOptionPane.showMessageDialog(this, cell.getStone() + " wins",
-				"game over", JOptionPane.NO_OPTION);
+	public void popWin(final Cell cell) {
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+					JOptionPane.showMessageDialog(GameFrame.this, cell.getStone() + " wins",
+							"game over", JOptionPane.NO_OPTION);
+				}
+			});
 	}
 }

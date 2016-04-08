@@ -39,9 +39,8 @@ public class Line implements ICellListener {
 		return cells.get(index);
 	}
 
-	public String getStr(Stone currentFocus) {
-		char oppo = currentFocus.getOpposite().chr;
-		return oppo + lineStr.toString() + oppo;
+	public String getStr() {
+		return lineStr.toString();
 	}
 
 	private void updateLineStrMap() {

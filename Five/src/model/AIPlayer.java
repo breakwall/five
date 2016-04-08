@@ -1,7 +1,7 @@
 package model;
 
 import utils.GameConstants;
-import argorithm.MinMaxAlgorithm;
+import algorithm.MinMaxAlgorithm;
 
 public class AIPlayer implements IPlayer{
 
@@ -22,7 +22,7 @@ public class AIPlayer implements IPlayer{
 			return boardHelper.getBoard().get(Board.COLUMN / 2, Board.COLUMN / 2);
 		}
 
-		Cell cell = algorithm.getBestMove(GameConstants.depth);
+		Cell cell = algorithm.getBestMove(GameConstants.DEPTH);
 		onceTime = System.currentTimeMillis() - start;
 		totalTime += onceTime;
 		return cell;

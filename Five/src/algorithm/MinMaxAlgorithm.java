@@ -1,4 +1,4 @@
-package argorithm;
+package algorithm;
 
 import java.util.Set;
 
@@ -13,7 +13,7 @@ public class MinMaxAlgorithm {
 	private final BoardHelper boardHelper;
 	private final Stone stone;
 	private final GameLogger logger = GameLogger.getInstance();
-	public static int evaluationCount = 0;
+	private int pruningCount = 0;
 	private MoveAndValue moveAndValue = new MoveAndValue();
 
 	public MinMaxAlgorithm(Stone stone, BoardHelper boardHelper) {
@@ -23,40 +23,42 @@ public class MinMaxAlgorithm {
 	}
 
 	public Cell getBestMove(int depth) {
-		int thisCount = evaluationCount;
+		pruningCount = 0;
+		int thisCount = EvaluationCount.getCount();
 		MoveAndValue moveAndValue= doGetMinMaxMove(null, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-		thisCount = evaluationCount - thisCount;
-		logger.logInfo("evaluation count: " + thisCount + "/" + evaluationCount);
+		thisCount = EvaluationCount.getCount() - thisCount;
+		logger.logInfo("evaluation count: " + thisCount + "/" + EvaluationCount.getCount() + ", pruningCount: " + pruningCount);
 		return moveAndValue.cell;
 	}
 
 	private MoveAndValue doGetMinMaxMove(Cell lastTryMove, int depth, int alpha, int beta, boolean isMax) {
 		if (lastTryMove != null && boardHelper.checkWin(lastTryMove)) {
-			evaluationCount++;
-			int value = evaluator.evaluate(evaluationCount);
-			return moveAndValue.get(lastTryMove, value, evaluationCount);
+			int value = evaluator.evaluate();
+			return moveAndValue.get(lastTryMove, value, EvaluationCount.getCount());
 		}
 
 		if (depth == 0) {
-			evaluationCount++;
-			int value = evaluator.evaluate(evaluationCount);
-			return moveAndValue.get(lastTryMove, value, evaluationCount);
-		}
-
-		Set<Cell> cells = getCandidateCells();
-		if (cells.isEmpty()) {
-			evaluationCount++;
-			int value = evaluator.evaluate(evaluationCount);
-			return moveAndValue.get(lastTryMove, value, evaluationCount);
+			int value = evaluator.evaluate();
+			return moveAndValue.get(lastTryMove, value, EvaluationCount.getCount());
 		}
 
 		Stone targetStone = isMax ? stone : stone.getOpposite();
+		Set<Cell> cells = getCandidateCells(targetStone);
+		if (cells.isEmpty()) {
+			int value = evaluator.evaluate();
+			return moveAndValue.get(lastTryMove, value, EvaluationCount.getCount());
+		}
 
 		Cell minMaxCell = null;
 		for (Cell cell : cells) {
 			boardHelper.tryMove(targetStone, cell, stone);
 			MoveAndValue mav = doGetMinMaxMove(cell, depth - 1, alpha, beta,
 					!isMax);
+
+//			if (lastTryMove == null) {
+//				System.out.print(mav.value + "->" + cell.toString() + "->" + mav.cell + ";");
+//			}
+
 			boardHelper.rollbackTry(stone);
 			int value = mav.value;
 			if (isMax) {
@@ -65,6 +67,7 @@ public class MinMaxAlgorithm {
 					alpha = value;
 					minMaxCell = cell;
 					if (alpha >= beta) {
+						pruningCount ++;
 						break;
 					}
 				}
@@ -74,11 +77,17 @@ public class MinMaxAlgorithm {
 					beta = value;
 					minMaxCell = cell;
 					if (alpha >= beta) {
+						pruningCount ++;
 						break;
 					}
 				}
 			}
 		}
+
+
+//		if (lastTryMove == null) {
+//			System.out.println();
+//		}
 
 		if (isMax) {
 			return createMAV(minMaxCell, alpha);
@@ -92,9 +101,9 @@ public class MinMaxAlgorithm {
 		return mav;
 	}
 
-	private Set<Cell> getCandidateCells() {
-		Set<Cell> cells = evaluator.getThreateningCells();
-		if (cells.isEmpty()) {
+	private Set<Cell> getCandidateCells(Stone focusStone) {
+		Set<Cell> cells = evaluator.getThreateningCells(focusStone);
+		if (cells == null) {
 			return boardHelper.getNearAvailable();
 		}
 		return cells;

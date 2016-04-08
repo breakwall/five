@@ -5,8 +5,6 @@ import gui.GameFrame;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.SwingUtilities;
-
 import logger.GameLogger;
 import model.AIPlayer;
 import model.Board;
@@ -14,7 +12,8 @@ import model.BoardHelper;
 import model.Cell;
 import model.IPlayer;
 import model.Stone;
-import argorithm.MinMaxAlgorithm;
+import utils.GameConstants;
+import algorithm.EvaluationCount;
 
 public class Main {
 	private GameLogger logger = GameLogger.getInstance();
@@ -24,7 +23,11 @@ public class Main {
 		Board board = new Board();
 		BoardHelper boardHelper = new BoardHelper(board);
 		Object lock = new Object();
-		final GameFrame gameFrame = new GameFrame(boardHelper, lock);
+
+		GameFrame gameFrame = null;
+		if (GameConstants.START_UI) {
+			gameFrame = new GameFrame(boardHelper, lock);
+		}
 
 		//init players
 		Map<Stone, IPlayer> players = new HashMap<Stone, IPlayer>();
@@ -48,37 +51,39 @@ public class Main {
 			}
 
 			boardHelper.move(currentStone, cell);
-			gameFrame.refresh();
+
+			if (GameConstants.START_UI) {
+				gameFrame.refresh();
+			}
+
 			GameLogger.getInstance().logInfo(boardHelper.getBoardStr());
 			if (player instanceof AIPlayer) {
 				GameLogger.getInstance().logInfo("AI spent: " + AIPlayer.onceTime / 1000.0);
 			}
 
 			if (boardHelper.checkWin(cell)) {
-				SwingUtilities.invokeLater(new Runnable() {
-
-					@Override
-					public void run() {
-						gameFrame.popWin(cell);
-					}
-				});
+				if (GameConstants.START_UI) {
+					gameFrame.popWin(cell);
+				}
 				GameLogger.getInstance().logInfo(currentStone + " win!");
 				break;
 			}
 
-//			if (boardHelper.getProgress().size() == GameConstants.moves) {
-//				System.out.println("break;");
-//				gameFrame.setVisible(false);
-//				gameFrame.dispose();
-//				break;
-//			}
+			if (boardHelper.getProgress().size() == GameConstants.MOVES) {
+				System.out.println("break;");
+				break;
+			}
 
 			currentStone = currentStone.getOpposite();
 		}
 
 		double time = AIPlayer.totalTime / 1000.0;
 		logger.logInfo("total time:" + time + "s");
-		logger.logInfo(MinMaxAlgorithm.evaluationCount / time + "  count/s");
+		logger.logInfo(EvaluationCount.getCount() / time + "  count/s");
+
+		if (GameConstants.START_UI) {
+			gameFrame.dispose();
+		}
 	}
 
 	public static void main(String[] args) {

@@ -46,7 +46,7 @@ public class Cell {
 		if (nearByCells == null) {
 			nearByCells = new ArrayList<Cell>();
 			for (Direction d : Direction.values()) {
-				for(int i = 1; i <= GameConstants.distance; i++) {
+				for(int i = 1; i <= GameConstants.NEARBY_DISTANCE; i++) {
 					Cell cell = board.get(x + d.x * i, y + d.y * i);
 					if (cell != null) {
 						nearByCells.add(cell);

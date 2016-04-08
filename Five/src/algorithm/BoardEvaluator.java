@@ -1,11 +1,11 @@
-package argorithm;
+package algorithm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import model.BoardHelper;
@@ -31,7 +31,8 @@ public class BoardEvaluator implements ICellListener {
 		boardHelper.getBoard().addListener(this);
 	}
 
-	public int evaluate(int boardId) {
+	public int evaluate() {
+		EvaluationCount.generate();
 		visitedLines.clear();
 		for (Cell cell : dirtyCells) {
 			List<Line> lines = boardHelper.getBoard().getReferenceLines(cell);
@@ -55,51 +56,45 @@ public class BoardEvaluator implements ICellListener {
 	}
 
 	private int visitorLine(Line line) {
+		Map<Type,Pattern[]> patternMap = PatternMap.getPatterns();
 		int lineValue = 0;
+		String lineStr = line.getStr();
 		for(Stone targetStone : Utils.sides) {
 			int posNeg = (stone == targetStone) ? 1 : -1;
-			String lineStr = line.getStr(targetStone);
-			List<String> patterns = PatternMap.getPatterns(targetStone);
-			List<Type> types = PatternMap.getTypes();
-			boolean isMatchHuo3 = false;
-			for (int i = 0; i < patterns.size(); i++) {
-				if (lineStr.indexOf(patterns.get(i)) == -1) {
-					continue;
-				}
-
-				if (types.get(i) == Type.HUO3) {
-					if (isMatchHuo3) {
+			for (Entry<Type, Pattern[]> e : patternMap.entrySet()) {
+				Pattern[] patterns = e.getValue();
+				for (int i = 0; i < patterns.length; i++) {
+					if (!patterns[i].isMatch(targetStone, lineStr)) {
 						continue;
-					} else {
-						isMatchHuo3 = true;
 					}
+
+					lineValue = lineValue + posNeg * e.getKey().score;
 				}
-				lineValue = lineValue + posNeg * types.get(i).score;
 			}
 		}
 
 		return lineValue;
 	}
 
-	public Set<Cell> getThreateningCells() {
+	/**
+	 * @param focusStone the next move stone
+	 * @return all candidate cells
+	 */
+	public Set<Cell> getThreateningCells(Stone focusStone) {
 		visitedLines.clear();
-		Set<Cell> threateningCells = new LinkedHashSet<Cell>();
 		Set<Line> lines = getLines();
-		for(Stone s : Utils.sides){
-			List<String> patterns = PatternMap.getSPatterns(s);
-			for (int i = 0; i < patterns.size(); i++) {
-				String pattern = patterns.get(i);
-				for (Line line : lines) {
-					List<Cell> list = getAvailableCells(line, s,
-							pattern);
-					if (list != null) {
-						threateningCells.addAll(list);
-					}
+
+		for(Type type : PatternMap.getKeytypes()) {
+			for (Stone s : new Stone[] { focusStone,
+					focusStone.getOpposite() }) {
+				Set<Cell> candidateCells = getAvailableCells(lines, s, type);
+				if (!candidateCells.isEmpty()) {
+					return candidateCells;
 				}
 			}
 		}
 
-		return threateningCells;
+		return null;
 	}
 
 	private Set<Line> getLines() {
@@ -112,18 +107,15 @@ public class BoardEvaluator implements ICellListener {
 		return visitedLines;
 	}
 
-	private List<Cell> getAvailableCells(Line line, Stone targetStone, String pattern) {
-		String lineStr = line.getStr(targetStone);
-		int index = lineStr.indexOf(pattern);
-		if (index == -1) {
-			return null;
-		}
-
-		List<Cell> cells = new ArrayList<Cell>();
-		char blankChar = Stone.NONE.chr;
-		for (int i = 0; i < pattern.length(); i++) {
-			if (pattern.charAt(i) == blankChar) {
-				cells.add(line.getCell(index - 1 + i));
+	private Set<Cell> getAvailableCells(Set<Line> lines, Stone targetStone, Type type) {
+		Pattern[] patterns = PatternMap.getPatterns().get(type);
+		Set<Cell> cells = new HashSet<>();
+		for (Line line : lines) {
+			for (Pattern pattern : patterns) {
+				List<Cell> list = pattern.getEmptyCells(targetStone, line);
+				if (list != null) {
+					cells.addAll(list);
+				}
 			}
 		}
 		return cells;
