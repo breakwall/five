@@ -10,6 +10,7 @@ import model.AIPlayer;
 import model.Board;
 import model.BoardHelper;
 import model.Cell;
+import model.Human;
 import model.IPlayer;
 import model.Stone;
 import utils.GameConstants;
@@ -34,8 +35,12 @@ public class Main {
 		IPlayer c1 = new AIPlayer(Stone.WHITE, boardHelper);
 		players.put(Stone.WHITE, c1);
 
-//		IPlayer c2 = new Human(Stone.BLACK, gameFrame, lock);
-		IPlayer c2 = new AIPlayer(Stone.BLACK, boardHelper);
+		IPlayer c2;
+		if (GameConstants.AI_VS_AI) {
+			c2 = new AIPlayer(Stone.BLACK, boardHelper);
+		} else {
+			c2 = new Human(Stone.BLACK, gameFrame, lock);
+		}
 		players.put(Stone.BLACK, c2);
 
 		//loop, black first
