@@ -15,7 +15,7 @@ public class GameLogger {
 	private GameLogger() {
 		try {
 			logger.setLevel(Level.INFO);
-			FileHandler handler = new FileHandler("moves_%g.txt", 0, 10, false);
+			FileHandler handler = new FileHandler("log/moves_%g.txt", 0, 10, false);
 			handler.setLevel(Level.FINE);
 			handler.setFormatter(new LogFormatter());
 			logger.addHandler(handler);
