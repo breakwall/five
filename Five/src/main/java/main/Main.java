@@ -31,17 +31,23 @@ public class Main {
 		}
 
 		//init players
-		Map<Stone, IPlayer> players = new HashMap<Stone, IPlayer>();
-		IPlayer c1 = new AIPlayer(Stone.WHITE, boardHelper);
-		players.put(Stone.WHITE, c1);
-
-		IPlayer c2;
-		if (GameConstants.AI_VS_AI) {
-			c2 = new AIPlayer(Stone.BLACK, boardHelper);
+		IPlayer p1;
+		IPlayer p2;
+		if (GameConstants.PLAYER1_AI) {
+			p1 = new AIPlayer(Stone.BLACK, boardHelper);
 		} else {
-			c2 = new Human(Stone.BLACK, gameFrame, lock);
+			p1 = new Human(Stone.BLACK, gameFrame, lock);
 		}
-		players.put(Stone.BLACK, c2);
+		
+		if (GameConstants.PLAYER2_AI) {
+			p2 = new AIPlayer(Stone.WHITE, boardHelper);
+		} else {
+			p2 = new Human(Stone.WHITE, gameFrame, lock);
+		}
+		
+		Map<Stone, IPlayer> players = new HashMap<Stone, IPlayer>();
+		players.put(p1.getStone(), p1);
+		players.put(p2.getStone(), p2);
 
 		//loop, black first
 		Stone currentStone = Stone.BLACK;
@@ -86,9 +92,9 @@ public class Main {
 		logger.logInfo("total time:" + time + "s");
 		logger.logInfo(EvaluationCount.getCount() / time + "  count/s");
 
-		if (GameConstants.START_UI) {
-			gameFrame.dispose();
-		}
+//		if (GameConstants.START_UI) {
+//			gameFrame.dispose();
+//		}
 	}
 
 	public static void main(String[] args) {

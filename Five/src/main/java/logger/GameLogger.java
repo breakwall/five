@@ -15,22 +15,22 @@ public class GameLogger {
 	private GameLogger() {
 		try {
 			logger.setLevel(Level.INFO);
-			FileHandler handler = new FileHandler("moves_%g.txt", 0, 2, false);
+			FileHandler handler = new FileHandler("moves_%g.txt", 0, 10, false);
 			handler.setLevel(Level.FINE);
 			handler.setFormatter(new LogFormatter());
 			logger.addHandler(handler);
 
-			FileHandler handler2 = new FileHandler("values_%g.txt", 0, 2, false);
-			handler2.setLevel(Level.FINER);
-			handler2.setFormatter(new LogFormatter());
-			handler2.setFilter(new Filter() {
-
-				@Override
-				public boolean isLoggable(LogRecord record) {
-					return record.getLevel() == Level.FINER;
-				}
-			});
-			logger.addHandler(handler2);
+//			FileHandler handler2 = new FileHandler("values_%g.txt", 0, 2, false);
+//			handler2.setLevel(Level.FINER);
+//			handler2.setFormatter(new LogFormatter());
+//			handler2.setFilter(new Filter() {
+//
+//				@Override
+//				public boolean isLoggable(LogRecord record) {
+//					return record.getLevel() == Level.FINER;
+//				}
+//			});
+//			logger.addHandler(handler2);
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

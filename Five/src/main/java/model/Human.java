@@ -44,5 +44,10 @@ public class Human implements IPlayer {
 		Cell cell = gameFrame.getUserSelected();
 		return cell;
 	}
+	
+	@Override
+	public Stone getStone() {
+		return stone;
+	}
 
 }

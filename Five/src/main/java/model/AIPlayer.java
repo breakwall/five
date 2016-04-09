@@ -9,7 +9,9 @@ public class AIPlayer implements IPlayer{
 	private MinMaxAlgorithm algorithm;
 	public static long totalTime = 0;
 	public static long onceTime = 0;
+	private Stone stone;
 	public AIPlayer(Stone stone, BoardHelper boardHelper) {
+		this.stone = stone;
 		this.boardHelper = boardHelper;
 		this.algorithm = new MinMaxAlgorithm(stone, boardHelper);
 	}
@@ -26,5 +28,10 @@ public class AIPlayer implements IPlayer{
 		onceTime = System.currentTimeMillis() - start;
 		totalTime += onceTime;
 		return cell;
+	}
+	
+	@Override
+	public Stone getStone() {
+		return stone;
 	}
 }
