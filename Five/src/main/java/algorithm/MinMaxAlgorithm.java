@@ -27,7 +27,7 @@ public class MinMaxAlgorithm {
 		int thisCount = EvaluationCount.getCount();
 		MoveAndValue moveAndValue= doGetMinMaxMove(null, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
 		thisCount = EvaluationCount.getCount() - thisCount;
-		logger.logInfo("evaluation count: " + thisCount + "/" + EvaluationCount.getCount() + ", pruningCount: " + pruningCount);
+		logger.logInfo("evaluation count: " + thisCount + "/" + EvaluationCount.getCount() + ", pruningCount: " + pruningCount + ", value: " + moveAndValue.value);
 		return moveAndValue.cell;
 	}
 
@@ -55,9 +55,10 @@ public class MinMaxAlgorithm {
 			MoveAndValue mav = doGetMinMaxMove(cell, depth - 1, alpha, beta,
 					!isMax);
 
-//			if (lastTryMove == null) {
-//				System.out.print(mav.value + "->" + cell.toString() + "->" + mav.cell + ";");
-//			}
+			if (lastTryMove == null) {
+				logger.logInfo(mav.value + "->" + cell.toString() + "->"
+						+ mav.cell + ";");
+			}
 
 			boardHelper.rollbackTry(stone);
 			int value = mav.value;
@@ -102,9 +103,11 @@ public class MinMaxAlgorithm {
 	}
 
 	private Set<Cell> getCandidateCells(Stone focusStone) {
-		Set<Cell> cells = evaluator.getThreateningCells(focusStone);
+		Set<Cell> cells = evaluator.getEmptyCellsByTypes(focusStone);
 		if (cells == null) {
 			return boardHelper.getNearAvailable();
+//		} else {
+//			System.out.println(cells);
 		}
 		return cells;
 	}

@@ -1,21 +1,24 @@
 package algorithm;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import logger.GameLogger;
+import model.Cell;
+import model.Line;
+import model.Stone;
 
 public class PatternMap {
 	private static final Map<Type, String[]> typePatternMap = new HashMap<Type, String[]>();
-	private static final List<Type> keyTypes = new ArrayList<Type>();
+	public static final Type[] KEY_TYPES = {Type.HUO4, Type.CHONG4, Type.HUO3};
+	public static final Type[] TWO_FOR_KEY_TYPE = {Type.MIAN3, Type.HUO2};
+	public static final Type[] NON_KEY_TYPES = {Type.MIAN3, Type.HUO2, Type.MIAN2};
 
 	static {
-		keyTypes.add(Type.HUO4);
-		keyTypes.add(Type.CHONG4);
-		keyTypes.add(Type.HUO3);
-//		threateningTypes.add(Type.MIAN3);
-
 		typePatternMap.put(Type.LIAN5, new String[] { "11111" });
 		typePatternMap.put(Type.HUO4, new String[] { "011110" });
 		typePatternMap.put(Type.CHONG4, new String[] { "011112", "10111", "11011" });
@@ -44,11 +47,37 @@ public class PatternMap {
 		return patterns;
 	}
 
-	public static List<Type> getKeytypes() {
-		return keyTypes;
-	}
-
-	public static Map<Type, String[]> getTypepatternmap() {
-		return typePatternMap;
+	public static Set<Cell> getEmptyCells(Stone s, Line line, Type... types) {
+		Set<Cell> emptyCells = new LinkedHashSet<Cell>();
+		String lineStr = line.getStr();
+//		if (!LineParser.parse(lineStr, s)) {
+//			GameLogger.getInstance().logInfo(s.chr + ":" + lineStr);
+//			return emptyCells;
+//		}
+//		int beginIndex = LineParser.beginIndex;
+//		int count = LineParser.focusCount;
+//		int maxConsecutiveCount = LineParser.maxConsCount;
+		for (Type type : types) {
+			Pattern[] patterns = PatternMap.getPatterns().get(type);
+			for (Pattern pattern : patterns) {
+//				if (count < pattern.getCount()
+//						|| maxConsecutiveCount < pattern.getConsecutiveCount()) {
+////					GameLogger.getInstance().logInfo(s.chr + ":" + lineStr + ":" + pattern.getStr());
+////					if (count < pattern.getCount()) {
+////						GameLogger.getInstance().logInfo("count:" + count + "<" + pattern.getCount());
+////					}
+////					
+////					if (maxConsecutiveCount < pattern.getConsecutiveCount()) {
+////						GameLogger.getInstance().logInfo("cons:" + maxConsecutiveCount + "<" + pattern.getConsecutiveCount());
+////					}
+//					continue;
+//				}
+				List<Cell> list = pattern.getEmptyCells(s, line);
+				if (list != null) {
+					emptyCells.addAll(list);
+				}
+			}
+		}
+		return emptyCells;
 	}
 }

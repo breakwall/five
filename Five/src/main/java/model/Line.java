@@ -40,7 +40,7 @@ public class Line implements ICellListener {
 	}
 
 	public String getStr() {
-		return lineStr.toString();
+		return lineStr;
 	}
 
 	private void updateLineStrMap() {

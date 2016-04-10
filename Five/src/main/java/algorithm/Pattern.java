@@ -13,6 +13,10 @@ import utils.Utils;
 public class Pattern {
 	private Map<Stone, PatternItem[]> patterns = new HashMap<Stone, PatternItem[]>();
 	private Type type;
+	private int blockNumber;
+	private int count;
+	private int consecutiveCount;
+	private String string;
 
 	public Pattern(String pattern, Type type) {
 		this.type = type;
@@ -22,19 +26,34 @@ public class Pattern {
 
 		if (pattern.charAt(0) == '2') {
 			headBlock = true;
+			blockNumber++;
 		}
 
 		if (pattern.charAt(pattern.length() - 1) == '2') {
 			tailBlock = true;
+			blockNumber++;
 		}
 
 		int fromIndex = headBlock ? 1 : 0;
 		int toIndex = tailBlock ? pattern.length() - 1 : pattern
 				.length();
-		String patternStr = pattern.substring(fromIndex, toIndex);
+		string = pattern.substring(fromIndex, toIndex);
 
+		int tmp = 0;
+		for (int i = 0; i < string.length(); i++) {
+			if (string.charAt(i) == '1') {
+				count++;
+				tmp++;
+			} 
+			
+			if (i == string.length() - 1 && string.charAt(i) == '0') {
+				consecutiveCount = Math.max(consecutiveCount, tmp);
+				tmp = 0;
+			}
+		}
+		
 		for (Stone s : Utils.sides) {
-			String str = patternStr;
+			String str = string;
 			str = str.replace('0', Stone.NONE.chr);
 			str = str.replace('1', s.chr);
 			String reverse = new StringBuffer(str).reverse().toString();
@@ -84,7 +103,7 @@ public class Pattern {
 
 		return item;
 	}
-
+	
 	public boolean isMatch(Stone stone, String lineStr) {
 		return doIsMatch(stone, lineStr) != null;
 	}
@@ -108,6 +127,22 @@ public class Pattern {
 	public Type getType() {
 		return type;
 	}
+	
+	public int getCount() {
+		return count;
+	}
+	
+	public int getBlockNumber() {
+		return blockNumber;
+	}
+	
+	public int getConsecutiveCount() {
+		return consecutiveCount;
+	}
+	
+	public String getStr() {
+		return string;
+	}
 
 	private class PatternItem {
 		String patternStr;
@@ -122,20 +157,29 @@ public class Pattern {
 			this.headBlock = headBlock;
 			this.tailBlock = tailBlock;
 			char emptyChar = Stone.NONE.chr;
-			for (int i = 0; i < patternStr.length(); i++) {
+			int length = patternStr.length();
+			for (int i = 0; i < length; i++) {
 				if (patternStr.charAt(i) != emptyChar) {
 					continue;
 				}
 
-				if (i == 0 && patternStr.charAt(i + 1) == emptyChar) {
-					continue;
+				if (!headBlock && !tailBlock) {
+					if (i == 0 && patternStr.charAt(i + 1) == emptyChar) {
+						continue;
+					}
+
+					if (i == length - 1 && patternStr.charAt(i - 1) == emptyChar) {
+						continue;
+					}
 				}
 
-				if (i == patternStr.length() - 1 && patternStr.charAt(i - 1) == emptyChar) {
-					continue;
+				if (i == 1 && patternStr.charAt(1) == emptyChar) {
+					emptyIndex.add(0, i);
+				} else if ( i == length - 2 && patternStr.charAt(i + 1) == emptyChar) {
+					emptyIndex.add(0, i);
+				} else {
+					emptyIndex.add(i);
 				}
-
-				emptyIndex.add(i);
 			}
 		}
 	}
