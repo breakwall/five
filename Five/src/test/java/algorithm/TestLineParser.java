@@ -14,43 +14,53 @@ public class TestLineParser {
 		boolean b = LineParser.parse("-------W--------", Stone.WHITE);
 		assertFalse(b);
 
-//		b = LineParser.parse("-------WW-------", Stone.WHITE);
-//		assertTrue(b);
-//		assertEquals("---WW---", LineParser.getSubString());
-//
-//		b = LineParser.parse("-------WW-", Stone.WHITE);
-//		assertTrue(b);
-//		assertEquals("---WW-", LineParser.getSubString());
-//
-//		b = LineParser.parse("---W---", Stone.WHITE);
-//		assertFalse(b);
-//
-//		b = LineParser.parse("-------", Stone.WHITE);
-//		assertFalse(b);
-//
-//		b = LineParser.parse("--W----", Stone.WHITE);
-//		assertFalse(b);
-//
-//		b = LineParser.parse("--W-", Stone.WHITE);
-//		assertFalse(b);
-//
-//		b = LineParser.parse("-B--WWB---", Stone.WHITE);
-//		assertFalse(b);
-//
-//		b = LineParser.parse("-B---WWB---", Stone.WHITE);
-//		assertTrue(b);
-//		assertEquals("B---WWB", LineParser.getSubString());
-//
-//		b = LineParser.parse("-WBWWBW--", Stone.WHITE);
-//		assertFalse(b);
-//
-//		b = LineParser.parse("-WBWWBW----", Stone.WHITE);
-//		assertTrue(b);
-//		assertEquals("-WBWWBW---", LineParser.getSubString());
-		
+		b = LineParser.parse("---W---", Stone.WHITE);
+		assertFalse(b);
+
+		b = LineParser.parse("-------", Stone.WHITE);
+		assertFalse(b);
+
+		b = LineParser.parse("--W----", Stone.WHITE);
+		assertFalse(b);
+
+		b = LineParser.parse("--W-", Stone.WHITE);
+		assertFalse(b);
+
+		b = LineParser.parse("-B--WWB---", Stone.WHITE);
+		assertFalse(b);
+
+		b = LineParser.parse("-WBWWBW--", Stone.WHITE);
+		assertFalse(b);
+
+		b = LineParser.parse("-------WW-------", Stone.WHITE);
+		assertTrue(b);
+		assertEquals(4, LineParser.beginIndex);
+		assertEquals(2, LineParser.focusCount);
+		assertEquals(2, LineParser.maxConsCount);
+
+		b = LineParser.parse("-------WW-", Stone.WHITE);
+		assertTrue(b);
+		assertEquals(4, LineParser.beginIndex);
+		assertEquals(2, LineParser.focusCount);
+		assertEquals(2, LineParser.maxConsCount);
+
+		b = LineParser.parse("-B---WWB---", Stone.WHITE);
+		assertTrue(b);
+		assertEquals(1, LineParser.beginIndex);
+		assertEquals(2, LineParser.focusCount);
+		assertEquals(2, LineParser.maxConsCount);
+
+		b = LineParser.parse("-WBWWBW----", Stone.WHITE);
+		assertTrue(b);
+		assertEquals(0, LineParser.beginIndex);
+		assertEquals(4, LineParser.focusCount);
+		assertEquals(2, LineParser.maxConsCount);
+
 		b = LineParser.parse("-------WB--B---", Stone.BLACK);
 		assertTrue(b);
-		System.out.println(LineParser.maxConsCount);
+		assertEquals(7, LineParser.beginIndex);
+		assertEquals(2, LineParser.focusCount);
+		assertEquals(1, LineParser.maxConsCount);
 	}
 
 }

@@ -3,6 +3,7 @@ package algorithm;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,7 @@ public class BoardEvaluator implements ICellListener {
 				visitedLines.add(line);
 			}
 		}
+
 		int totalValue = 0;
 		for (int i : lineValueMap.values()) {
 			totalValue += i;
@@ -55,21 +57,34 @@ public class BoardEvaluator implements ICellListener {
 		return totalValue;
 	}
 
+//	private int visitorLine(Line line) {
+//		Map<Type, Pattern[]> patternMap = PatternMap.getPatterns();
+//		int lineValue = 0;
+//		String lineStr = line.getStr();
+//		for (Stone targetStone : Utils.sides) {
+//			int posNeg = (stone == targetStone) ? 1 : -1;
+//			for (Entry<Type, Pattern[]> e : patternMap.entrySet()) {
+//				Pattern[] patterns = e.getValue();
+//				for (int i = 0; i < patterns.length; i++) {
+//					if (!patterns[i].isMatch(targetStone, lineStr)) {
+//						continue;
+//					}
+//
+//					lineValue = lineValue + posNeg * e.getKey().score;
+//				}
+//			}
+//		}
+//
+//		return lineValue;
+//	}
+
 	private int visitorLine(Line line) {
-		Map<Type, Pattern[]> patternMap = PatternMap.getPatterns();
 		int lineValue = 0;
-		String lineStr = line.getStr();
 		for (Stone targetStone : Utils.sides) {
 			int posNeg = (stone == targetStone) ? 1 : -1;
-			for (Entry<Type, Pattern[]> e : patternMap.entrySet()) {
-				Pattern[] patterns = e.getValue();
-				for (int i = 0; i < patterns.length; i++) {
-					if (!patterns[i].isMatch(targetStone, lineStr)) {
-						continue;
-					}
-
-					lineValue = lineValue + posNeg * e.getKey().score;
-				}
+			List<Type> types = PatternMap.getLineScore(targetStone, line, Type.values());
+			for(int i = 0; i < types.size(); i++) {
+				lineValue += posNeg * types.get(i).score;
 			}
 		}
 
@@ -102,8 +117,8 @@ public class BoardEvaluator implements ICellListener {
 				return candidateCells;
 			}
 		}
-		
-		
+
+
 		// get empty cells by non key type lines
 //		Set<Cell> cells = new LinkedHashSet<>();
 //		for (Type type : PatternMap.NON_KEY_TYPES) {
@@ -114,20 +129,20 @@ public class BoardEvaluator implements ICellListener {
 //				}
 //			}
 //		}
-//		
+//
 //		if (!cells.isEmpty()) {
 //			return cells;
 //		}
-		
+
 		return null;
 	}
 
 	private Set<Cell> getCellsBy2Type(Set<Line> lines, Stone s) {
 		Set<Cell> set = new LinkedHashSet<>();
-		Map<Line, Set<Cell>> lineCellMap = new HashMap<>();
+		Map<Line, Set<Cell>> lineCellMap = new LinkedHashMap<>();
 		for (Line line : lines) {
 			Set<Cell> lineEmptyCells = PatternMap.getEmptyCells(s, line,
-					PatternMap.TWO_FOR_KEY_TYPE);
+					PatternMap.INTERSECT_TO_KEY_TYPES);
 			if (lineEmptyCells.isEmpty()) {
 				continue;
 			}

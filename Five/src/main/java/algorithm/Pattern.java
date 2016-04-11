@@ -44,14 +44,14 @@ public class Pattern {
 			if (string.charAt(i) == '1') {
 				count++;
 				tmp++;
-			} 
-			
-			if (i == string.length() - 1 && string.charAt(i) == '0') {
+			}
+
+			if (i == string.length() - 1 || string.charAt(i) == '0') {
 				consecutiveCount = Math.max(consecutiveCount, tmp);
 				tmp = 0;
 			}
 		}
-		
+
 		for (Stone s : Utils.sides) {
 			String str = string;
 			str = str.replace('0', Stone.NONE.chr);
@@ -103,7 +103,7 @@ public class Pattern {
 
 		return item;
 	}
-	
+
 	public boolean isMatch(Stone stone, String lineStr) {
 		return doIsMatch(stone, lineStr) != null;
 	}
@@ -127,21 +127,28 @@ public class Pattern {
 	public Type getType() {
 		return type;
 	}
-	
+
 	public int getCount() {
 		return count;
 	}
-	
+
 	public int getBlockNumber() {
 		return blockNumber;
 	}
-	
+
 	public int getConsecutiveCount() {
 		return consecutiveCount;
 	}
-	
+
 	public String getStr() {
 		return string;
+	}
+
+	@Override
+	public String toString() {
+		PatternItem item = patterns.get(Stone.WHITE)[0];
+		return (item.headBlock ? "2" : "") + string
+				+ (item.tailBlock ? "2" : "");
 	}
 
 	private class PatternItem {

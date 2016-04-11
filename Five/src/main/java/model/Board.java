@@ -70,6 +70,7 @@ public class Board {
 					list.add(line);
 				}
 			}
+			linesCache.put(cell, list);
 		}
 
 		return list;

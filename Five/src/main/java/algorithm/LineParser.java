@@ -28,13 +28,13 @@ public class LineParser {
 
 		for (int i = 0; i < lineStr.length(); i++) {
 			char chr = lineStr.charAt(i);
-			
+
 			if (chr == emptyChr) {
 				availableCount++;
 				if (!emptyCountEnd) {
 					emptyCount++;
 				}
-				
+
 				maxConsCount = Math.max(maxConsCount, tmp);
 				tmp = 0;
 			} else if (chr == focusChr) {
@@ -55,11 +55,14 @@ public class LineParser {
 						firstOppoChar = true;
 					}
 				}
-				
+
 				maxAvailableCount = Math.max(maxAvailableCount, availableCount);
 				availableCount = 0;
+
+				maxConsCount = Math.max(maxConsCount, tmp);
+				tmp = 0;
 			}
-			
+
 			if (i == lineStr.length() - 1) {
 				maxConsCount = Math.max(maxConsCount, tmp);
 				tmp = 0;

@@ -55,10 +55,10 @@ public class MinMaxAlgorithm {
 			MoveAndValue mav = doGetMinMaxMove(cell, depth - 1, alpha, beta,
 					!isMax);
 
-			if (lastTryMove == null) {
-				logger.logInfo(mav.value + "->" + cell.toString() + "->"
-						+ mav.cell + ";");
-			}
+//			if (lastTryMove == null) {
+//				logger.logInfo(mav.value + "->" + cell.toString() + "->"
+//						+ mav.cell + ";");
+//			}
 
 			boardHelper.rollbackTry(stone);
 			int value = mav.value;
@@ -107,7 +107,7 @@ public class MinMaxAlgorithm {
 		if (cells == null) {
 			return boardHelper.getNearAvailable();
 //		} else {
-//			System.out.println(cells);
+//			logger.logInfo("" + cells);
 		}
 		return cells;
 	}
