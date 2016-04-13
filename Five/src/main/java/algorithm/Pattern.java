@@ -69,12 +69,12 @@ public class Pattern {
 		}
 	}
 
-	private PatternItem doIsMatch(Stone stone, String lineStr) {
+	private PatternItem doIsMatch(Stone stone, String lineStr, int beginIndex) {
 		PatternItem[] items = patterns.get(stone);
 
 		PatternItem item = null;
 		for (int i = 0; i < items.length; i++) {
-			int index = lineStr.indexOf(items[i].patternStr);
+			int index = lineStr.indexOf(items[i].patternStr, beginIndex);
 			if (index != -1) {
 				item = items[i];
 				item.index = index;
@@ -105,12 +105,20 @@ public class Pattern {
 	}
 
 	public boolean isMatch(Stone stone, String lineStr) {
-		return doIsMatch(stone, lineStr) != null;
+		return doIsMatch(stone, lineStr, 0) != null;
+	}
+
+	public boolean isMatch(Stone stone, String lineStr, int beginIndex) {
+		return doIsMatch(stone, lineStr, beginIndex) != null;
 	}
 
 	public List<Cell> getEmptyCells(Stone stone, Line line) {
+		return getEmptyCells(stone, line, 0);
+	}
+
+	public List<Cell> getEmptyCells(Stone stone, Line line, int beginIndex) {
 		String lineStr = line.getStr();
-		PatternItem item = doIsMatch(stone, lineStr);
+		PatternItem item = doIsMatch(stone, lineStr, beginIndex);
 
 		if (item == null) {
 			return null;

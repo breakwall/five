@@ -6,12 +6,18 @@ import model.Board;
 import model.Direction;
 import model.Point;
 import model.Stone;
+import algorithm.Type;
 
 public class Utils {
 
 	public static final Direction[] rays = {Direction.N, Direction.NW, Direction.W, Direction.SW};
-
 	public static final Stone[] sides = new Stone[] { Stone.BLACK, Stone.WHITE };
+
+	public static final Type[] ALL_TYPES = Type.values();
+	public static final Type[] KEY_TYPES = {Type.HUO4, Type.CHONG4, Type.HUO3};
+	public static final Type[] INTERSECT_TO_KEY_TYPES = {Type.MIAN3, Type.HUO2};
+	public static final Type[] NON_KEY_TYPES = {Type.MIAN3, Type.HUO2, Type.MIAN2};
+
 
 	public static final Random RANDOM = new Random();
 

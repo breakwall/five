@@ -57,32 +57,11 @@ public class BoardEvaluator implements ICellListener {
 		return totalValue;
 	}
 
-//	private int visitorLine(Line line) {
-//		Map<Type, Pattern[]> patternMap = PatternMap.getPatterns();
-//		int lineValue = 0;
-//		String lineStr = line.getStr();
-//		for (Stone targetStone : Utils.sides) {
-//			int posNeg = (stone == targetStone) ? 1 : -1;
-//			for (Entry<Type, Pattern[]> e : patternMap.entrySet()) {
-//				Pattern[] patterns = e.getValue();
-//				for (int i = 0; i < patterns.length; i++) {
-//					if (!patterns[i].isMatch(targetStone, lineStr)) {
-//						continue;
-//					}
-//
-//					lineValue = lineValue + posNeg * e.getKey().score;
-//				}
-//			}
-//		}
-//
-//		return lineValue;
-//	}
-
 	private int visitorLine(Line line) {
 		int lineValue = 0;
 		for (Stone targetStone : Utils.sides) {
 			int posNeg = (stone == targetStone) ? 1 : -1;
-			List<Type> types = PatternMap.getLineScore(targetStone, line, Type.values());
+			List<Type> types = PatternMap.getLineScore(targetStone, line, Utils.ALL_TYPES);
 			for(int i = 0; i < types.size(); i++) {
 				lineValue += posNeg * types.get(i).score;
 			}
@@ -101,7 +80,7 @@ public class BoardEvaluator implements ICellListener {
 
 		// get empty cells by key type lines
 		Stone[] sides = new Stone[] { focusStone, focusStone.getOpposite() };
-		for (Type type : PatternMap.KEY_TYPES) {
+		for (Type type : Utils.KEY_TYPES) {
 			for (Stone s : sides) {
 				Set<Cell> candidateCells = getCellsByType(lines, s, type);
 				if (!candidateCells.isEmpty()) {
@@ -121,7 +100,7 @@ public class BoardEvaluator implements ICellListener {
 
 		// get empty cells by non key type lines
 //		Set<Cell> cells = new LinkedHashSet<>();
-//		for (Type type : PatternMap.NON_KEY_TYPES) {
+//		for (Type type : Utils.NON_KEY_TYPES) {
 //			for (Stone s: sides) {
 //				Set<Cell> candidateCells = getCellsByType(lines, s, type);
 //				if (!candidateCells.isEmpty()) {
@@ -142,7 +121,7 @@ public class BoardEvaluator implements ICellListener {
 		Map<Line, Set<Cell>> lineCellMap = new LinkedHashMap<>();
 		for (Line line : lines) {
 			Set<Cell> lineEmptyCells = PatternMap.getEmptyCells(s, line,
-					PatternMap.INTERSECT_TO_KEY_TYPES);
+					Utils.INTERSECT_TO_KEY_TYPES);
 			if (lineEmptyCells.isEmpty()) {
 				continue;
 			}

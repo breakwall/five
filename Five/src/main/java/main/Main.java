@@ -33,18 +33,18 @@ public class Main {
 		//init players
 		IPlayer p1;
 		IPlayer p2;
-		if (GameConstants.PLAYER1_AI) {
+		if (GameConstants.BLACK_AI) {
 			p1 = new AIPlayer(Stone.BLACK, boardHelper);
 		} else {
 			p1 = new Human(Stone.BLACK, gameFrame, lock);
 		}
-		
-		if (GameConstants.PLAYER2_AI) {
+
+		if (GameConstants.WHITE_AI) {
 			p2 = new AIPlayer(Stone.WHITE, boardHelper);
 		} else {
 			p2 = new Human(Stone.WHITE, gameFrame, lock);
 		}
-		
+
 		Map<Stone, IPlayer> players = new HashMap<Stone, IPlayer>();
 		players.put(p1.getStone(), p1);
 		players.put(p2.getStone(), p2);
@@ -90,7 +90,7 @@ public class Main {
 
 		double time = AIPlayer.totalTime / 1000.0;
 		logger.logInfo("total time:" + time + "s");
-		logger.logInfo(EvaluationCount.getCount() / time + "  count/s");
+		logger.logInfo(EvaluationCount.getTotalCount() / time + "  count/s");
 
 //		if (GameConstants.START_UI) {
 //			gameFrame.dispose();

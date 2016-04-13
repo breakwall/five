@@ -16,10 +16,6 @@ import model.Stone;
 public class PatternMap {
 	private static final Map<Type, String[]> typePatternMap = new LinkedHashMap<Type, String[]>();
 
-	public static final Type[] KEY_TYPES = {Type.HUO4, Type.CHONG4, Type.HUO3};
-	public static final Type[] INTERSECT_TO_KEY_TYPES = {Type.MIAN3, Type.HUO2};
-	public static final Type[] NON_KEY_TYPES = {Type.MIAN3, Type.HUO2, Type.MIAN2};
-
 	static {
 		typePatternMap.put(Type.LIAN5, new String[] { "11111" });
 		typePatternMap.put(Type.HUO4, new String[] { "011110" });
@@ -53,11 +49,10 @@ public class PatternMap {
 		Set<Cell> emptyCells = new LinkedHashSet<Cell>();
 		String lineStr = line.getStr();
 		if (!LineParser.parse(lineStr, s)) {
-//			GameLogger.getInstance().logInfo(s.chr + ":" + lineStr);
 			return emptyCells;
 		}
-//		int beginIndex = LineParser.beginIndex;
-//		int count = LineParser.focusCount;
+
+		int beginIndex = LineParser.beginIndex;
 		int maxConsecutiveCount = LineParser.maxConsCount;
 		for (Type type : types) {
 			if (LineParser.focusCount < type.count) {
@@ -70,7 +65,7 @@ public class PatternMap {
 //					GameLogger.getInstance().logInfo("cons:" + maxConsecutiveCount + "<" + pattern.getConsecutiveCount());
 					continue;
 				}
-				List<Cell> list = pattern.getEmptyCells(s, line);
+				List<Cell> list = pattern.getEmptyCells(s, line, beginIndex);
 				if (list != null) {
 					emptyCells.addAll(list);
 				}
@@ -88,6 +83,7 @@ public class PatternMap {
 
 		int maxConsecutiveCount = LineParser.maxConsCount;
 		int focusCount = LineParser.focusCount;
+		int beginIndex = LineParser.beginIndex;
 
 		for (Type type : types) {
 			if (focusCount < type.count) {
@@ -100,7 +96,7 @@ public class PatternMap {
 					continue;
 				}
 
-				if (pattern.isMatch(s, lineStr)) {
+				if (pattern.isMatch(s, lineStr, beginIndex)) {
 					lineTypes.add(type);
 				}
 			}
