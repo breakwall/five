@@ -27,20 +27,20 @@ public class MinMaxAlgorithm {
 		pruningCount = 0;
 
 		EvaluationCount.beginEvalute();
-		MoveAndValue moveAndValue= doGetMinMaxMove(null, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, true, false);
+		MoveAndValue moveAndValue= doGetMinMaxMove(null, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
 		EvaluationCount.endEvaluate();
 
 		logger.logInfo("evaluation count: " + EvaluationCount.getCount() + "/" + EvaluationCount.getTotalCount() + ", pruningCount: " + pruningCount + ", value: " + moveAndValue.value);
 		return moveAndValue.cell;
 	}
 
-	private MoveAndValue doGetMinMaxMove(Cell lastTryMove, int depth, int alpha, int beta, boolean isMax, boolean keyTypeEmptyCell) {
+	private MoveAndValue doGetMinMaxMove(Cell lastTryMove, int depth, int alpha, int beta, boolean isMax) {
 		if (lastTryMove != null && boardHelper.checkWin(lastTryMove)) {
 			int value = evaluator.evaluate();
 			return moveAndValue.get(lastTryMove, value, EvaluationCount.getCount());
 		}
 
-		if (!isSearchDeeper(keyTypeEmptyCell, depth)) {
+		if (depth == GameConstants.DEPTH) {
 			int value = evaluator.evaluate();
 			return moveAndValue.get(lastTryMove, value, EvaluationCount.getCount());
 		}
@@ -50,9 +50,6 @@ public class MinMaxAlgorithm {
 		Set<Cell> cells = evaluator.getEmptyCellsByTypes(targetStone);
 		if (cells == null) {
 			cells =  boardHelper.getNearAvailable();
-			keyTypeEmptyCell = true;
-		} else {
-			keyTypeEmptyCell = false;
 		}
 
 		if (cells.isEmpty()) {
@@ -67,7 +64,7 @@ public class MinMaxAlgorithm {
 			boardHelper.tryMove(targetStone, cell, stone);
 
 			// do min/max evaluate
-			MoveAndValue mav = doGetMinMaxMove(cell, depth + 1, alpha, beta, !isMax, keyTypeEmptyCell);
+			MoveAndValue mav = doGetMinMaxMove(cell, depth + 1, alpha, beta, !isMax);
 //			if (depth == GameConstants.DEPTH) {
 //				logger.logInfo(mav.value + "->" + cell.toString() + "->"
 //						+ mav.cell + ";");
@@ -111,8 +108,8 @@ public class MinMaxAlgorithm {
 		}
 	}
 
-	private boolean isSearchDeeper(boolean keyTypeEmptyCell, int depth) {
-		return depth < GameConstants.DEPTH;
+//	private boolean isSearchDeeper(boolean keyTypeEmptyCell, int depth) {
+////		return depth != GameConstants.DEPTH;
 //		if (depth < GameConstants.DEPTH) {
 //			return true;
 //		}
@@ -123,9 +120,8 @@ public class MinMaxAlgorithm {
 //		}
 //
 //		return keyTypeEmptyCell
-//				&& depth < GameConstants.MAX_DEPTH
-//				&& EvaluationCount.getCount() < GameConstants.MAX_EVALUATION_COUNT;
-	}
+//				&& depth < GameConstants.MAX_DEPTH;
+//	}
 
 	private MoveAndValue createMAV(Cell minMaxCell, int minMaxValue) {
 		MoveAndValue mav = moveAndValue.get(minMaxCell, minMaxValue, 0);

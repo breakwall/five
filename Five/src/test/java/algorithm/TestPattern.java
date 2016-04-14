@@ -15,22 +15,22 @@ public class TestPattern {
 	@Test
 	public void test5() {
 		Pattern pattern = new Pattern("11111", null);
-		boolean isMatch = pattern.isMatch(Stone.BLACK, "BBBBB");
+		boolean isMatch = pattern.isMatch(Stone.BLACK, "BBBBB", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "WWWWW");
+		isMatch = pattern.isMatch(Stone.BLACK, "WWWWW", 0);
 		assertFalse(isMatch);
 
-		isMatch = pattern.isMatch(Stone.WHITE, "WWWWW");
+		isMatch = pattern.isMatch(Stone.WHITE, "WWWWW", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.WHITE, "BBBBB");
+		isMatch = pattern.isMatch(Stone.WHITE, "BBBBB", 0);
 		assertFalse(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "WBBBBB");
+		isMatch = pattern.isMatch(Stone.BLACK, "WBBBBB", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "BBBBBW");
+		isMatch = pattern.isMatch(Stone.BLACK, "BBBBBW", 0);
 		assertTrue(isMatch);
 	}
 
@@ -38,25 +38,25 @@ public class TestPattern {
 	public void test4() {
 		Pattern pattern = new Pattern("011110", null);
 
-		boolean isMatch = pattern.isMatch(Stone.BLACK, "BBBBB");
+		boolean isMatch = pattern.isMatch(Stone.BLACK, "BBBBB", 0);
 		assertFalse(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "WWWWW");
+		isMatch = pattern.isMatch(Stone.BLACK, "WWWWW", 0);
 		assertFalse(isMatch);
 
-		isMatch = pattern.isMatch(Stone.WHITE, "WWWW");
+		isMatch = pattern.isMatch(Stone.WHITE, "WWWW", 0);
 		assertFalse(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "-BBBBW");
+		isMatch = pattern.isMatch(Stone.BLACK, "-BBBBW", 0);
 		assertFalse(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "-BBBB-");
+		isMatch = pattern.isMatch(Stone.BLACK, "-BBBB-", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "W-BBBB-");
+		isMatch = pattern.isMatch(Stone.BLACK, "W-BBBB-", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "W-BBBB-W");
+		isMatch = pattern.isMatch(Stone.BLACK, "W-BBBB-W", 0);
 		assertTrue(isMatch);
 	}
 
@@ -64,104 +64,104 @@ public class TestPattern {
 	public void testBlock4() {
 		Pattern pattern = new Pattern("011112", null);
 
-		boolean isMatch = pattern.isMatch(Stone.BLACK, "-BBBBW");
+		boolean isMatch = pattern.isMatch(Stone.BLACK, "-BBBBW", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "-BBBB");
+		isMatch = pattern.isMatch(Stone.BLACK, "-BBBB", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "BBBB-");
+		isMatch = pattern.isMatch(Stone.BLACK, "BBBB-", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "-BBBBB");
+		isMatch = pattern.isMatch(Stone.BLACK, "-BBBBB", 0);
 		assertFalse(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "BBBBB");
+		isMatch = pattern.isMatch(Stone.BLACK, "BBBBB", 0);
 		assertFalse(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "W-BBBBW");
+		isMatch = pattern.isMatch(Stone.BLACK, "W-BBBBW", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "WBBBB-W");
+		isMatch = pattern.isMatch(Stone.BLACK, "WBBBB-W", 0);
 		assertTrue(isMatch);
 	}
 
 	@Test
 	public void test3() {
 		Pattern pattern = new Pattern("011100", null);
-		boolean isMatch = pattern.isMatch(Stone.BLACK, "-BBB-");
+		boolean isMatch = pattern.isMatch(Stone.BLACK, "-BBB-", 0);
 		assertFalse(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "--BBB-");
+		isMatch = pattern.isMatch(Stone.BLACK, "--BBB-", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "-BBB--");
+		isMatch = pattern.isMatch(Stone.BLACK, "-BBB--", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "--BBB--");
+		isMatch = pattern.isMatch(Stone.BLACK, "--BBB--", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "W-BBB--");
+		isMatch = pattern.isMatch(Stone.BLACK, "W-BBB--", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "--BBB-W");
+		isMatch = pattern.isMatch(Stone.BLACK, "--BBB-W", 0);
 		assertTrue(isMatch);
 	}
 
 	@Test
 	public void testBlock3() {
 		Pattern pattern = new Pattern("001112", null);
-		boolean isMatch = pattern.isMatch(Stone.BLACK, "--BBBW");
+		boolean isMatch = pattern.isMatch(Stone.BLACK, "--BBBW", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "--BBB");
+		isMatch = pattern.isMatch(Stone.BLACK, "--BBB", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "BBB--");
+		isMatch = pattern.isMatch(Stone.BLACK, "BBB--", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "WBBB---");
+		isMatch = pattern.isMatch(Stone.BLACK, "WBBB---", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "---BBBW");
+		isMatch = pattern.isMatch(Stone.BLACK, "---BBBW", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "BBB");
+		isMatch = pattern.isMatch(Stone.BLACK, "BBB", 0);
 		assertFalse(isMatch);
 	}
 
 	@Test
 	public void test2() {
 		Pattern pattern = new Pattern("001100", null);
-		boolean isMatch = pattern.isMatch(Stone.BLACK, "--BB--");
+		boolean isMatch = pattern.isMatch(Stone.BLACK, "--BB--", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "W--BB--");
+		isMatch = pattern.isMatch(Stone.BLACK, "W--BB--", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "--BB--W");
+		isMatch = pattern.isMatch(Stone.BLACK, "--BB--W", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "--BBB---");
+		isMatch = pattern.isMatch(Stone.BLACK, "--BBB---", 0);
 		assertFalse(isMatch);
 	}
 
 	@Test
 	public void testBlock2() {
 		Pattern pattern = new Pattern("211000", null);
-		boolean isMatch = pattern.isMatch(Stone.BLACK, "BB---");
+		boolean isMatch = pattern.isMatch(Stone.BLACK, "BB---", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "WBB---");
+		isMatch = pattern.isMatch(Stone.BLACK, "WBB---", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "---BBW");
+		isMatch = pattern.isMatch(Stone.BLACK, "---BBW", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "---BB");
+		isMatch = pattern.isMatch(Stone.BLACK, "---BB", 0);
 		assertTrue(isMatch);
 
-		isMatch = pattern.isMatch(Stone.BLACK, "-BB---");
+		isMatch = pattern.isMatch(Stone.BLACK, "-BB---", 0);
 		assertFalse(isMatch);
 	}
 

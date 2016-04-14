@@ -1,12 +1,19 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import utils.Utils;
+import algorithm.LineParser;
+import algorithm.LineParser.ParseInfo;
 
 public class Line implements ICellListener {
 	private List<Cell> cells;
 	private Direction direction;
 	private String lineStr = null;
+	private Map<Stone, ParseInfo> lineInfo = new HashMap<>();
 
 	public Line(List<Cell> cells, Direction direction) {
 		this.cells = cells;
@@ -50,6 +57,7 @@ public class Line implements ICellListener {
 		}
 
 		lineStr = sb.toString();
+		updateLineInfo();
 	}
 
 	@Override
@@ -69,5 +77,16 @@ public class Line implements ICellListener {
 	public void cellChanged(Cell cell, Stone side) {
 		int i = cells.indexOf(cell);
 		lineStr = lineStr.substring(0, i) + cell.getStone().chr + lineStr.substring(i + 1);
+		updateLineInfo();
+	}
+
+	private void updateLineInfo() {
+		for(Stone stone : Utils.sides) {
+			lineInfo.put(stone, LineParser.parse(lineStr, stone));
+		}
+	}
+
+	public ParseInfo getParseInfo(Stone stone) {
+		return lineInfo.get(stone);
 	}
 }

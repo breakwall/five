@@ -74,7 +74,7 @@ public class Pattern {
 
 		PatternItem item = null;
 		for (int i = 0; i < items.length; i++) {
-			int index = lineStr.indexOf(items[i].patternStr, beginIndex);
+			int index = lineStr.indexOf(items[i].patternStr);
 			if (index != -1) {
 				item = items[i];
 				item.index = index;
@@ -104,16 +104,8 @@ public class Pattern {
 		return item;
 	}
 
-	public boolean isMatch(Stone stone, String lineStr) {
-		return doIsMatch(stone, lineStr, 0) != null;
-	}
-
 	public boolean isMatch(Stone stone, String lineStr, int beginIndex) {
 		return doIsMatch(stone, lineStr, beginIndex) != null;
-	}
-
-	public List<Cell> getEmptyCells(Stone stone, Line line) {
-		return getEmptyCells(stone, line, 0);
 	}
 
 	public List<Cell> getEmptyCells(Stone stone, Line line, int beginIndex) {

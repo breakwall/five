@@ -12,6 +12,7 @@ import java.util.Set;
 import model.Cell;
 import model.Line;
 import model.Stone;
+import algorithm.LineParser.ParseInfo;
 
 public class PatternMap {
 	private static final Map<Type, String[]> typePatternMap = new LinkedHashMap<Type, String[]>();
@@ -47,22 +48,21 @@ public class PatternMap {
 
 	public static Set<Cell> getEmptyCells(Stone s, Line line, Type... types) {
 		Set<Cell> emptyCells = new LinkedHashSet<Cell>();
-		String lineStr = line.getStr();
-		if (!LineParser.parse(lineStr, s)) {
+		ParseInfo parseInfo = line.getParseInfo(s);
+		if (parseInfo == null) {
 			return emptyCells;
 		}
 
-		int beginIndex = LineParser.beginIndex;
-		int maxConsecutiveCount = LineParser.maxConsCount;
+		int beginIndex = parseInfo.beginIndex;
+		int maxConsecutiveCount = parseInfo.maxConsCount;
 		for (Type type : types) {
-			if (LineParser.focusCount < type.count) {
+			if (parseInfo.focusCount < type.count) {
 				continue;
 			}
 
 			Pattern[] patterns = PatternMap.getPatterns().get(type);
 			for (Pattern pattern : patterns) {
 				if (maxConsecutiveCount < pattern.getConsecutiveCount()) {
-//					GameLogger.getInstance().logInfo("cons:" + maxConsecutiveCount + "<" + pattern.getConsecutiveCount());
 					continue;
 				}
 				List<Cell> list = pattern.getEmptyCells(s, line, beginIndex);
@@ -76,14 +76,15 @@ public class PatternMap {
 
 	public static List<Type> getLineScore(Stone s, Line line, Type... types) {
 		List<Type> lineTypes = new ArrayList<>();
-		String lineStr = line.getStr();
-		if (!LineParser.parse(lineStr, s)) {
+		ParseInfo parseInfo = line.getParseInfo(s);
+		if (parseInfo == null) {
 			return lineTypes;
 		}
 
-		int maxConsecutiveCount = LineParser.maxConsCount;
-		int focusCount = LineParser.focusCount;
-		int beginIndex = LineParser.beginIndex;
+		int maxConsecutiveCount = parseInfo.maxConsCount;
+		int focusCount = parseInfo.focusCount;
+		int beginIndex = parseInfo.beginIndex;
+		String lineStr = line.getStr();
 
 		for (Type type : types) {
 			if (focusCount < type.count) {

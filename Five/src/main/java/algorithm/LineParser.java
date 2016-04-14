@@ -3,17 +3,8 @@ package algorithm;
 import model.Stone;
 
 public class LineParser {
-	static int beginIndex;
-	static int maxConsCount;
-	static int focusCount;
-	static String lineStr;
-
-	public static boolean parse(String lineStr, Stone stone) {
-		// clear cache
-		beginIndex = 0;
-		maxConsCount = 0;
-		focusCount = 0;
-		LineParser.lineStr = lineStr;
+	public static ParseInfo parse(String lineStr, Stone stone) {
+		ParseInfo info = new ParseInfo();
 
 		final char focusChr = stone.chr;
 		final char emptyChr = Stone.NONE.chr;
@@ -35,7 +26,7 @@ public class LineParser {
 					emptyCount++;
 				}
 
-				maxConsCount = Math.max(maxConsCount, tmp);
+				info.maxConsCount = Math.max(info.maxConsCount, tmp);
 				tmp = 0;
 			} else if (chr == focusChr) {
 				if (emptyCountEnd != true) {
@@ -46,7 +37,7 @@ public class LineParser {
 				}
 
 				tmp++;
-				focusCount++;
+				info.focusCount++;
 				availableCount++;
 			} else {
 				if (emptyCountEnd != true) {
@@ -59,34 +50,36 @@ public class LineParser {
 				maxAvailableCount = Math.max(maxAvailableCount, availableCount);
 				availableCount = 0;
 
-				maxConsCount = Math.max(maxConsCount, tmp);
+				info.maxConsCount = Math.max(info.maxConsCount, tmp);
 				tmp = 0;
 			}
 
 			if (i == lineStr.length() - 1) {
-				maxConsCount = Math.max(maxConsCount, tmp);
+				info.maxConsCount = Math.max(info.maxConsCount, tmp);
 				tmp = 0;
 				maxAvailableCount = Math.max(maxAvailableCount, availableCount);
 				availableCount = 0;
 			}
 		}
 
-		if (emptyCount == lineStr.length() || focusCount < 2 || maxAvailableCount < 5) {
-			return false;
+		if (emptyCount == lineStr.length() || info.focusCount < 2 || maxAvailableCount < 5) {
+			return null;
 		}
 
 		if (firstOppoChar) {
-			beginIndex = emptyCount;
+			info.beginIndex = emptyCount;
 		} else if (emptyCount > 3) {
-			beginIndex = emptyCount - 3;
+			info.beginIndex = emptyCount - 3;
 		} else {
-			beginIndex = 0;
+			info.beginIndex = 0;
 		}
 
-		return true;
+		return info;
 	}
 
-	public static String getSubString() {
-		return lineStr.substring(beginIndex);
+	public static class ParseInfo {
+		int beginIndex;
+		int maxConsCount;
+		int focusCount;
 	}
 }

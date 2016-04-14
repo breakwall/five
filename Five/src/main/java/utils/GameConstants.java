@@ -9,7 +9,7 @@ public class GameConstants {
 	/**
 	 * max search depth
 	 */
-	public static final int MAX_DEPTH = 20;
+	public static final int MAX_DEPTH = 6;
 
 
 	/**

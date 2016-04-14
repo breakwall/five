@@ -14,6 +14,7 @@ import model.Human;
 import model.IPlayer;
 import model.Stone;
 import utils.GameConstants;
+import algorithm.BoardEvaluator;
 import algorithm.EvaluationCount;
 
 public class Main {
@@ -89,8 +90,11 @@ public class Main {
 		}
 
 		double time = AIPlayer.totalTime / 1000.0;
-		logger.logInfo("total time:" + time + "s");
-		logger.logInfo(EvaluationCount.getTotalCount() / time + "  count/s");
+		logger.logInfo("total time:" + time + "s, "
+				+ EvaluationCount.getTotalCount()
+				/ (BoardEvaluator.evaluateTime / Math.pow(10, 9))
+				+ " count/s, " + (boardHelper.getProgress().size() / time)
+				+ " step/s");
 
 //		if (GameConstants.START_UI) {
 //			gameFrame.dispose();

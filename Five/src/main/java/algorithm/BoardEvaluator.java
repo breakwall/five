@@ -24,8 +24,7 @@ public class BoardEvaluator implements ICellListener {
 	private Set<Line> visitedLines = new HashSet<Line>();
 	private Map<Line, Integer> lineValueMap = new HashMap<Line, Integer>();
 	private List<Cell> dirtyCells = new ArrayList<Cell>();
-
-	public static int count = 0;
+	public static long evaluateTime = 0;
 
 	public BoardEvaluator(Stone stone, BoardHelper boardHelper) {
 		this.boardHelper = boardHelper;
@@ -34,6 +33,7 @@ public class BoardEvaluator implements ICellListener {
 	}
 
 	public int evaluate() {
+		long begin = System.nanoTime();
 		EvaluationCount.generate();
 		visitedLines.clear();
 		for (Cell cell : dirtyCells) {
@@ -54,6 +54,7 @@ public class BoardEvaluator implements ICellListener {
 			totalValue += i;
 		}
 		dirtyCells.clear();
+		evaluateTime += (System.nanoTime() - begin);
 		return totalValue;
 	}
 
@@ -163,15 +164,9 @@ public class BoardEvaluator implements ICellListener {
 
 	private Set<Cell> getCellsByType(Set<Line> lines, Stone targetStone,
 			Type type) {
-		Pattern[] patterns = PatternMap.getPatterns().get(type);
 		Set<Cell> cells = new LinkedHashSet<>();
 		for (Line line : lines) {
-			for (Pattern pattern : patterns) {
-				List<Cell> list = pattern.getEmptyCells(targetStone, line);
-				if (list != null) {
-					cells.addAll(list);
-				}
-			}
+			cells.addAll(PatternMap.getEmptyCells(targetStone, line, type));
 		}
 		return cells;
 	}
