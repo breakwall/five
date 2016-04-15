@@ -15,12 +15,12 @@ public class GameConstants {
 	/**
 	 * max evaluation count for one move
 	 */
-	public static final int MAX_EVALUATION_COUNT = 30000;
+	public static final int MAX_EVALUATION_COUNT = 50000;
 
 	/**
 	 * nearby distance from focus cell to available cells
 	 */
-	public static final int NEARBY_DISTANCE = 2;
+	public static final int NEARBY_DISTANCE = 1;
 
 	/**
 	 * true if black side is AI player

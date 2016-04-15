@@ -5,7 +5,13 @@ import gui.GameFrame;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+
 import logger.GameLogger;
+import logger.Statistics;
+import logger.Statistics.NodeRenderer;
 import model.AIPlayer;
 import model.Board;
 import model.BoardHelper;
@@ -99,6 +105,15 @@ public class Main {
 //		if (GameConstants.START_UI) {
 //			gameFrame.dispose();
 //		}
+		JFrame frame = new JFrame();
+		JScrollPane panel = new JScrollPane();
+		frame.add(panel);
+		JTree tree = new JTree(Statistics.getTreeNode());
+		tree.setCellRenderer(new NodeRenderer());
+		panel.getViewport().add(tree);
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
 	}
 
 	public static void main(String[] args) {
