@@ -1,10 +1,7 @@
 package model;
 
 import gui.GameFrame;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import logger.Statistics;
 
 public class Human implements IPlayer {
 
@@ -42,6 +39,8 @@ public class Human implements IPlayer {
 			}
 		}
 		Cell cell = gameFrame.getUserSelected();
+		Statistics.addRootNode();
+		Statistics.rootNodeOver(cell, 0);
 		return cell;
 	}
 	

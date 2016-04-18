@@ -26,9 +26,10 @@ public class StoneButton extends JButton {
 	private Stone stone = Stone.NONE;
 	private boolean isLastMove = false;
 	public StoneButton() {
-		this.setBackground(Color.WHITE);
+		this.setContentAreaFilled(false);
+//		this.setOpaque(true);
 		this.setBorderPainted(false);
-		this.setPreferredSize(new Dimension(40, 40));
+		this.setPreferredSize(new Dimension(36, 36));
 	}
 	
 	public void setStone(Stone stone, boolean isLastMove) {
@@ -48,34 +49,30 @@ public class StoneButton extends JButton {
 		int height = getHeight();
 		
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setStroke(new BasicStroke(3));
+		g2.setStroke(new BasicStroke(1));
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setColor(Color.WHITE);
-		g2.fill3DRect(0, 0, width, height, true);
+//		g2.setColor(Color.gray);
+//		g2.drawLine(0, height / 2, width, height / 2);
+//		g2.drawLine(width / 2, 0, width / 2, height);
 		
-		int radius = width < height ? width / 2 : height / 2;
-
-		switch (stone) {
-		case BLACK:
-			g.setColor(Color.BLACK);
-			break;
-		case WHITE:
-			g.setColor(Color.BLACK);
-			break;
-		default:
-			return;
-		}
+		int radius = width < height ? width * 2 / 3 : height * 2 / 3;
+		
 		Ellipse2D e = new Ellipse2D.Float((width - radius) / 2, (height - radius) / 2, radius, radius);
 		if (stone == Stone.BLACK) {
+			g.setColor(Color.BLACK);
 			g2.fill(e);
-		} else {
+		} else if (stone == Stone.WHITE){
+			g.setColor(Color.WHITE);
+			g2.fill(e);
+			g.setColor(Color.BLACK);
 			g2.draw(e);
 		}
 		
 		if (isLastMove) {
 			g2.setColor(Color.RED);
 			int rectangle = 6;
-			g2.fillRect((width - rectangle) / 2, (height - rectangle) / 2, rectangle, rectangle);
+			Ellipse2D e2 = new Ellipse2D.Float((width - rectangle) / 2f, (height - rectangle) / 2f, rectangle, rectangle);
+			g2.fill(e2);
 		}
 	}
 }
