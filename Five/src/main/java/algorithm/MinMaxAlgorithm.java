@@ -40,7 +40,7 @@ public class MinMaxAlgorithm {
 	private MoveAndValue doGetMinMaxMove(Cell lastTryMove, int depth, int alpha, int beta, boolean isMax) {
 		if (lastTryMove != null && boardHelper.checkWin(lastTryMove)) {
 			int value = evaluator.evaluate();
-			return moveAndValue.get(lastTryMove, value, EvaluationCount.getCount());
+			return moveAndValue.get(lastTryMove, value);
 		}
 
 		Stone targetStone = isMax ? stone : stone.getOpposite();
@@ -51,7 +51,7 @@ public class MinMaxAlgorithm {
 
 		if (!isSearchDeeper) {
 			int value = evaluator.evaluate();
-			return moveAndValue.get(lastTryMove, value, EvaluationCount.getCount());
+			return moveAndValue.get(lastTryMove, value);
 		}
 
 		if (cells == null) {
@@ -61,7 +61,12 @@ public class MinMaxAlgorithm {
 		if (cells.isEmpty()) {
 			// no available cells to move
 			int value = evaluator.evaluate();
-			return moveAndValue.get(lastTryMove, value, EvaluationCount.getCount());
+			return moveAndValue.get(lastTryMove, value);
+		}
+		
+		if (cells.size() == 1 && depth == 0) {
+			int value = evaluator.evaluate();
+			return moveAndValue.get(cells.iterator().next(), value);
 		}
 
 		Cell minMaxCell = null;
@@ -110,32 +115,24 @@ public class MinMaxAlgorithm {
 		Statistics.setSelectedChild(minMaxCell);
 
 		if (isMax) {
-			return createMAV(minMaxCell, alpha);
+			return getMAV(minMaxCell, alpha);
 		} else {
-			return createMAV(minMaxCell, beta);
+			return getMAV(minMaxCell, beta);
 		}
 	}
 
-	private MoveAndValue createMAV(Cell minMaxCell, int minMaxValue) {
-		MoveAndValue mav = moveAndValue.get(minMaxCell, minMaxValue, 0);
-		return mav;
+	private MoveAndValue getMAV(Cell minMaxCell, int minMaxValue) {
+		return moveAndValue.get(minMaxCell, minMaxValue);
 	}
 
 	private class MoveAndValue {
 		Cell cell;
 		int value;
-		int boardId;
 
-		MoveAndValue get(Cell cell, int value, int boardId) {
+		MoveAndValue get(Cell cell, int value) {
 			this.cell = cell;
 			this.value = value;
-			this.boardId = boardId;
 			return this;
-		}
-
-		@Override
-		public String toString() {
-			return boardId + " " + cell.toString() + "(" + value + ")";
 		}
 	}
 }

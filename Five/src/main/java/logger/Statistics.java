@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 
@@ -53,7 +54,7 @@ public class Statistics {
 		}
 	}
 
-	static class Node implements TreeNode {
+	static class Node extends DefaultMutableTreeNode {
 		public boolean isSelected;
 		Node parent;
 		Cell move;
@@ -129,7 +130,7 @@ public class Statistics {
 			}
 			String s = level + ":" + move + " " + value;
 			if (isSelected && level > 1) {
-				Node root = getRoot();
+				Node root = getRoot2();
 				int i = treeNode.children.indexOf(root);
 				if (i + level - 1 < treeNode.children.size()
 						&& treeNode.children.get(i + level - 1).move == move) {
@@ -139,7 +140,7 @@ public class Statistics {
 			return s;
 		}
 
-		private Node getRoot() {
+		private Node getRoot2() {
 			if (parent == null) {
 				return null;
 			}

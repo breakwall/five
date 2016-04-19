@@ -1,18 +1,21 @@
 package gui;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import model.Board;
 import model.BoardHelper;
 import model.Cell;
-import model.Stone;
 
 public class BoardPanel extends JPanel {
 	/**
@@ -36,6 +39,18 @@ public class BoardPanel extends JPanel {
 				add(button);
 			}
 		}
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		ImageIcon icon = new ImageIcon("board.jpg");
+	    Image img = icon.getImage();
+		int width = getWidth();
+		int height = getHeight();
+		Graphics2D g2 = (Graphics2D) g;
+		g2.drawImage(img, 0, 0, width,
+	    		height, icon.getImageObserver());
 	}
 
 	public void refresh() {
