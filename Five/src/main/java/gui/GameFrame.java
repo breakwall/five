@@ -1,7 +1,5 @@
 package gui;
 
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,6 +17,10 @@ import logger.Statistics.NodeRenderer;
 import model.BoardHelper;
 import model.Cell;
 import utils.GameConstants;
+import ez.layout.formlayout.core.FormAttachment;
+import ez.layout.formlayout.core.FormData;
+import ez.layout.formlayout.core.FormLayout;
+import ez.layout.formlayout.core.FormLayoutHelper;
 
 public class GameFrame extends JFrame implements ActionListener {
 	/**
@@ -35,20 +37,29 @@ public class GameFrame extends JFrame implements ActionListener {
 		this.lock = lock;
 		this.setTitle("GoBang");
 		JPanel mainPanel = new JPanel();
-		GridLayout layout = new GridLayout();
+		FormLayout layout = new FormLayout();
 		mainPanel.setLayout(layout);
-		add(mainPanel);
-		
+		setContentPane(mainPanel);
+
+		FormLayoutHelper helper = new FormLayoutHelper();
+
 		panel = new BoardPanel(boardHelper, this);
-		mainPanel.add(panel);
-		
+		helper.addComponent(panel, FormLayoutHelper.TOP, FormLayoutHelper.LEFT);
+
 		JScrollPane scrollPane = new JScrollPane();
 		tree = new JTree(Statistics.getTreeNode());
 		tree.setCellRenderer(new NodeRenderer());
-		tree.expandRow(6);
 		scrollPane.getViewport().add(tree);
-		mainPanel.add(scrollPane);
-		
+
+		FormData fd = new FormData();
+		fd.left = new FormAttachment(panel);
+		fd.right = new FormAttachment(panel, 800);
+		fd.top = new FormAttachment(0, 0);
+		fd.bottom = new FormAttachment(100, 0);
+		helper.addComponent(scrollPane, fd);
+
+		helper.fillPanel(mainPanel);
+
 		this.pack();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
