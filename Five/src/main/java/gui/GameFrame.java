@@ -38,6 +38,8 @@ public class GameFrame extends JFrame implements ActionListener {
 		this.setTitle("GoBang");
 		JPanel mainPanel = new JPanel();
 		FormLayout layout = new FormLayout();
+		layout.margin = 10;
+		layout.padding = 10;
 		mainPanel.setLayout(layout);
 		setContentPane(mainPanel);
 
@@ -53,17 +55,16 @@ public class GameFrame extends JFrame implements ActionListener {
 
 		FormData fd = new FormData();
 		fd.left = new FormAttachment(panel);
-		fd.right = new FormAttachment(panel, 800);
+		fd.right = new FormAttachment(100, 0);
 		fd.top = new FormAttachment(0, 0);
 		fd.bottom = new FormAttachment(100, 0);
 		helper.addComponent(scrollPane, fd);
-
 		helper.fillPanel(mainPanel);
 
-		this.pack();
+		this.setSize(800, 600);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
-		this.setResizable(false);
+//		this.setResizable(false);
 		this.setVisible(true);
 	}
 

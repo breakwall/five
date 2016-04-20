@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -19,7 +20,7 @@ import model.Cell;
 
 public class BoardPanel extends JPanel {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2648411181261245485L;
 
@@ -28,6 +29,7 @@ public class BoardPanel extends JPanel {
 
 	public BoardPanel(BoardHelper boardHelper, ActionListener listener) {
 		this.boardHelper = boardHelper;
+		this.setPreferredSize(new Dimension(535, 535));
 		GridLayout layout = new GridLayout(Board.COLUMN, Board.COLUMN);
 		this.setLayout(layout);
 		for (int y = 0; y < Board.COLUMN; y++) {
@@ -40,7 +42,7 @@ public class BoardPanel extends JPanel {
 			}
 		}
 	}
-	
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -66,7 +68,7 @@ public class BoardPanel extends JPanel {
 			button.repaint();
 		}
 	}
-	
+
 	public Cell getCellOfButton(JButton button) {
 		return cellButtonMap.get(button);
 	}
