@@ -17,6 +17,7 @@ import logger.Statistics.NodeRenderer;
 import model.BoardHelper;
 import model.Cell;
 import utils.GameConstants;
+import ez.layout.formlayout.core.Alignment;
 import ez.layout.formlayout.core.FormAttachment;
 import ez.layout.formlayout.core.FormData;
 import ez.layout.formlayout.core.FormLayout;
@@ -55,13 +56,14 @@ public class GameFrame extends JFrame implements ActionListener {
 
 		FormData fd = new FormData();
 		fd.left = new FormAttachment(panel);
-		fd.right = new FormAttachment(100, 0);
+		fd.right = new FormAttachment(panel, 160, Alignment.RIGHT);
 		fd.top = new FormAttachment(0, 0);
-		fd.bottom = new FormAttachment(100, 0);
+		fd.bottom = new FormAttachment(panel, 0, Alignment.BOTTOM);
 		helper.addComponent(scrollPane, fd);
 		helper.fillPanel(mainPanel);
 
-		this.setSize(800, 600);
+//		this.setSize(800, 600);
+		this.pack();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 //		this.setResizable(false);

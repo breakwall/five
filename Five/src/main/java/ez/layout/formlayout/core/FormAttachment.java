@@ -17,6 +17,7 @@ public final class FormAttachment {
     public static final int denominator = 100;
     int offset;
     Component component;
+    int alignment;
 
     public FormAttachment(int numerator) {
         this(numerator, 0);
@@ -32,8 +33,13 @@ public final class FormAttachment {
     }
 
     public FormAttachment(Component component, int offset) {
+    	this(component, offset, Alignment.DEFAULT);
+    }
+
+    public FormAttachment(Component component, int offset, int alignment) {
         this.component = component;
         this.offset = offset;
+        this.alignment = alignment;
     }
 
     FormAttachment minus(int value) {

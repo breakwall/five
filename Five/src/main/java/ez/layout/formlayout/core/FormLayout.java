@@ -9,10 +9,10 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager2;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.JButton;
+import java.util.Map.Entry;
 
 /**
  *
@@ -67,7 +67,8 @@ public final class FormLayout implements LayoutManager2 {
     /**
      * @deprecated
      */
-    @Override
+    @Deprecated
+	@Override
     public void addLayoutComponent(String name, Component comp) {
         //do nothing
     }
@@ -75,32 +76,42 @@ public final class FormLayout implements LayoutManager2 {
     @Override
     public void layoutContainer(Container parent) {
         synchronized (parent.getTreeLock()) {
-            int w = Math.max(parent.getWidth() - margin * 2, 0);
-            int h = Math.max(parent.getHeight() - margin * 2, 0);
-            Component[] components = parent.getComponents();
-            for (Component comp : components) {
-                FormData formData = componentConstraints.get(comp);
-                if (formData == null) {
-                    continue;
-                }
-
-                FormAttachment left = formData.getLeftAttachment(this, comp, padding);
-                FormAttachment right = formData.getRightAttachment(this, comp, padding);
-                FormAttachment top = formData.getTopAttachment(this, comp, padding);
-                FormAttachment bottom = formData.getBottomAttachment(this, comp, padding);
-
-                int x = left.solveX(w);     // x coordinate of left
-                int y = top.solveX(h);     // y coordinate of top
-                int x2 = right.solveX(w);          // x coordinate of right
-                int y2 = bottom.solveX(h);   // y coordinate of bottom
-                int width = x2 - x;
-                int height = y2 - y;
-//                System.out.println("=========layout container");
-//                System.out.println("comp:"+ ((JButton)comp).getText());
-//                System.out.println("x:" + x + ", y:" + y + " ,width:" + width + ", height:"+ height);
-                comp.setBounds(x + margin, y + margin, width, height);
-            }
+        	Map<Component, Rectangle> map = calculateLayout(parent);
+        	for (Entry<Component, Rectangle> e : map.entrySet()) {
+        		e.getKey().setBounds(e.getValue());
+        	}
         }
+    }
+
+    private Map<Component, Rectangle> calculateLayout(Container parent) {
+    	Map<Component, Rectangle> map = new HashMap<>();
+        int w = Math.max(parent.getWidth() - margin * 2, 0);
+        int h = Math.max(parent.getHeight() - margin * 2, 0);
+        Component[] components = parent.getComponents();
+        for (Component comp : components) {
+            FormData formData = componentConstraints.get(comp);
+            if (formData == null) {
+                continue;
+            }
+
+            FormAttachment left = formData.getLeftAttachment(this, comp, padding);
+            FormAttachment right = formData.getRightAttachment(this, comp, padding);
+            FormAttachment top = formData.getTopAttachment(this, comp, padding);
+            FormAttachment bottom = formData.getBottomAttachment(this, comp, padding);
+
+            int x = left.solveX(w);     // x coordinate of left
+            int y = top.solveX(h);     // y coordinate of top
+            int x2 = right.solveX(w);          // x coordinate of right
+            int y2 = bottom.solveX(h);   // y coordinate of bottom
+            int width = x2 - x;
+            int height = y2 - y;
+//            System.out.println("=========layout container");
+//            System.out.println("comp:"+ ((JButton)comp).getText());
+//            System.out.println("x:" + x + ", y:" + y + " ,width:" + width + ", height:"+ height);
+            map.put(comp, new Rectangle(x + margin, y + margin, width, height));
+        }
+
+        return map;
     }
 
     @Override
@@ -110,19 +121,29 @@ public final class FormLayout implements LayoutManager2 {
 
     @Override
     public Dimension preferredLayoutSize(Container parent) {
-        int width = 0;
-        int height = 0;
-        for(Component c: parent.getComponents()) {
-            FormData fd = componentConstraints.get(c);
-            Dimension d = fd.getMinimumSize(this, c, padding);
-            if (width < d.width) {
-                width = d.width;
-            }
-            if (height < d.height) {
-                height = d.height;
-            }
+        Rectangle rect = new Rectangle();
+
+        Map<Component, Rectangle> map = calculateLayout(parent);
+        for (Entry<Component, Rectangle> e : map.entrySet()) {
+        	rect = rect.union(e.getValue());
         }
-        return new Dimension(width, height);
+
+        rect.setSize(rect.width + margin, rect.height + margin);
+        return rect.getSize();
+
+//        int width = 0;
+//        int height = 0;
+//        for(Component c: parent.getComponents()) {
+//            FormData fd = componentConstraints.get(c);
+//            Dimension d = fd.getMinimumSize(this, c, padding);
+//            if (width < d.width) {
+//                width = d.width;
+//            }
+//            if (height < d.height) {
+//                height = d.height;
+//            }
+//        }
+//        return new Dimension(width, height);
     }
 
     @Override
