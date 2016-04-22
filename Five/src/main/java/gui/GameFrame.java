@@ -22,7 +22,11 @@ import ez.layout.formlayout.core.FormAttachment;
 import ez.layout.formlayout.core.FormData;
 import ez.layout.formlayout.core.FormLayout;
 import ez.layout.formlayout.core.FormLayoutHelper;
-
+/**
+ * the main frame of the game
+ * @author justis.ren
+ *
+ */
 public class GameFrame extends JFrame implements ActionListener {
 	/**
 	 *

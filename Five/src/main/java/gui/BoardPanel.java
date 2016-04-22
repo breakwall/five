@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import model.Board;
 import model.BoardHelper;
 import model.Cell;
+import utils.Utils;
 
 public class BoardPanel extends JPanel {
 	/**
@@ -46,7 +47,7 @@ public class BoardPanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		ImageIcon icon = new ImageIcon("board.jpg");
+		ImageIcon icon = new ImageIcon(Utils.getResourceURL("board.jpg"));
 	    Image img = icon.getImage();
 		int width = getWidth();
 		int height = getHeight();

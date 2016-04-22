@@ -1,5 +1,7 @@
 package utils;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Random;
 
 import model.Board;
@@ -46,5 +48,17 @@ public class Utils {
 		int yRangeStart = y - range < 0 ? 0 : y - range;
 		int yRangeEnd = y + range >= Board.COLUMN ? Board.COLUMN - 1 : y + range;
 		return Point.get(random(xRangeStart, xRangeEnd), random(yRangeStart, yRangeEnd));
+	}
+
+	public static URL getResourceURL(String resource) {
+		return Utils.class.getClassLoader().getResource(resource);
+	}
+
+	public static void createDirIfNotExist(String dirName) {
+		String path = Utils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		File file = new File(path, dirName);
+		if (!file.isDirectory()) {
+			file.mkdir();
+		}
 	}
 }

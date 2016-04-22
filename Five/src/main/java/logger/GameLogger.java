@@ -3,17 +3,19 @@ package logger;
 import java.io.IOException;
 import java.util.Date;
 import java.util.logging.FileHandler;
-import java.util.logging.Filter;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
+import utils.Utils;
 
 public class GameLogger {
 	private static GameLogger instance = new GameLogger();
 	private Logger logger = Logger.getLogger("game logger");
 	private GameLogger() {
 		try {
+			Utils.createDirIfNotExist("log");
 			logger.setLevel(Level.INFO);
 			FileHandler handler = new FileHandler("log/moves_%g.txt", 0, 10, false);
 			handler.setLevel(Level.FINE);

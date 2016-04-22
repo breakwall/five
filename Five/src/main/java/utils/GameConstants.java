@@ -9,7 +9,7 @@ public class GameConstants {
 	/**
 	 * max search depth
 	 */
-	public static final int MAX_DEPTH = 6;
+	public static final int MAX_DEPTH = 10;
 
 
 	/**
@@ -25,7 +25,7 @@ public class GameConstants {
 	/**
 	 * true if black side is AI player
 	 */
-	public static final boolean BLACK_AI = true;
+	public static final boolean BLACK_AI = false;
 
 	/**
 	 * true if white side is AI player
@@ -35,7 +35,7 @@ public class GameConstants {
 	/**
 	 * true if start game with gui
 	 */
-	public static final boolean START_UI = false || !BLACK_AI ||!WHITE_AI;
+	public static final boolean START_UI = true || !BLACK_AI ||!WHITE_AI;
 
 	/**
 	 * debug using, break the game when reaching the move count
